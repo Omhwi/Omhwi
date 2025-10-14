@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Party Themes - Omhwi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- CSS Variables --- */
+        :root {
+            --primary-color: #e84a5f; /* Party Pink */
+            --secondary-color: #3c3c3c; /* Dark Grey */
+            --light-bg: #f5f5f5;
+            --dark-bg: #2c3e50;
+            --card-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        /* --- Base Styles --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            line-height: 1.6;
+            color: var(--secondary-color);
+            background-color: #ffffff;
+            padding-top: 70px; /* Space for fixed header */
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--secondary-color);
+        }
+
+        /* --- Header Styles (Reused) --- */
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            background-color: #ffffff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: var(--primary-color);
+            white-space: nowrap;
+        }
+
+        .primary-nav a {
+            margin: 0 15px;
+            font-size: 0.95em;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        /* Active link highlight */
+        .primary-nav .active-link {
+            color: var(--primary-color);
+            font-weight: 600;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 3px;
+        }
+
+        .primary-nav a:hover {
+            color: var(--primary-color);
+        }
+
+        .vendor-link {
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .mini-search {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 180px;
+            font-size: 0.9em;
+        }
+
+        .user-actions i {
+            font-size: 1.2em;
+            cursor: pointer;
+            color: var(--secondary-color);
+        }
+
+        .profile-icon {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .help-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .account-dropdown { position: relative; display: inline-block; }
+        .dropdown-content { display: none; position: absolute; right: 0; background-color: #fff; min-width: 220px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); z-index: 1000; border-radius: 8px; overflow: hidden; }
+        .dropdown-content.show { display: block; }
+        .dropdown-header { padding: 15px; border-bottom: 1px solid #eee; display: flex; align-items: center; }
+        .dropdown-header img { width: 40px; height: 40px; border-radius: 50%; margin-right: 10px; }
+        .user-info h4 { margin: 0; font-size: 16px; }
+        .user-info p { margin: 0; font-size: 12px; color: #777; }
+        .dropdown-menu { list-style: none; padding: 0; margin: 0; }
+        .dropdown-menu a { padding: 12px 15px; display: flex; align-items: center; transition: background-color 0.3s; }
+        .dropdown-menu a:hover { background-color: #f5f5f5; }
+        .dropdown-menu i { margin-right: 10px; width: 20px; text-align: center; }
+
+        /* --- Page Content Styles --- */
+        .page-content {
+            padding: 0 5% 50px;
+        }
+
+        /* Hero Section */
+        .themes-hero {
+            /* Changed placeholder text to reflect birthday theme */
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://via.placeholder.com/1600x600/e84a5f/ffffff?text=Omhwi+Birthday+Party+Themes+Banner');
+            background-size: cover;
+            background-position: center;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            margin-bottom: 40px;
+            border-radius: 10px;
+        }
+
+        .themes-hero h1 {
+            font-size: 3em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .themes-hero p {
+            font-size: 1.2em;
+            max-width: 700px;
+            margin-bottom: 30px;
+        }
+
+        .cta-button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            transition: background-color 0.3s, transform 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .cta-button:hover {
+            background-color: #d14153;
+            transform: translateY(-2px);
+        }
+        
+        /* --- Search Bar and Trending --- */
+        .search-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            gap: 20px;
+        }
+
+        .theme-search-box {
+            position: relative;
+            flex-grow: 1;
+        }
+
+        .theme-search-box input {
+            width: 100%;
+            padding: 12px 20px 12px 45px;
+            border: 2px solid #ddd;
+            border-radius: 50px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        .theme-search-box input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 5px rgba(232, 74, 95, 0.5);
+        }
+
+        .theme-search-box i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+        }
+
+        .trending-themes {
+            display: flex;
+            gap: 10px;
+            white-space: nowrap;
+            overflow-x: auto;
+            padding-bottom: 5px; /* space for scrollbar */
+        }
+
+        .trending-themes span {
+            display: inline-block;
+            background: var(--light-bg);
+            color: var(--secondary-color);
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            border: 1px solid #ddd;
+        }
+
+        .trending-themes span:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        /* Category Filter/Navigation (Updated for Birthday focus) */
+        .theme-filter {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 2px solid var(--light-bg);
+            padding-bottom: 10px;
+        }
+
+        .theme-filter button {
+            background: none;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 5px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            color: var(--secondary-color);
+            border-bottom: 3px solid transparent;
+            transition: border-bottom 0.3s, color 0.3s;
+        }
+
+        .theme-filter button.active,
+        .theme-filter button:hover {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+        }
+
+        /* Theme Grid */
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .theme-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s, box-shadow 0.3s, opacity 0.3s;
+            position: relative;
+        }
+
+        .theme-card.hidden {
+            display: none;
+            opacity: 0;
+        }
+
+        .theme-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .theme-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .theme-info {
+            padding: 20px;
+        }
+
+        .theme-info h3 {
+            font-size: 1.3em;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .theme-info p {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 15px;
+            height: 40px; 
+            overflow: hidden;
+        }
+
+        .view-venues-link {
+            color: var(--secondary-color);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .view-venues-link i {
+            margin-left: 8px;
+            font-size: 0.9em;
+            transition: transform 0.3s;
+        }
+
+        .theme-card:hover .view-venues-link i {
+            transform: translateX(5px);
+        }
+        
+        /* Custom Request Section */
+        .custom-request-section {
+            background: var(--primary-color);
+            color: white;
+            padding: 50px 5%;
+            text-align: center;
+            border-radius: 10px;
+        }
+
+        .custom-request-section h2 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .custom-request-section p {
+            font-size: 1.1em;
+            margin-bottom: 25px;
+        }
+
+        .custom-cta {
+            background-color: white;
+            color: var(--primary-color);
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 700;
+            transition: background-color 0.3s;
+        }
+
+        .custom-cta:hover {
+            background-color: #eee;
+        }
+
+        /* --- Footer Styles (Reused) --- */
+        footer {
+            background: var(--dark-bg);
+            color: white;
+            padding: 50px 5% 20px;
+            margin-top: 50px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-column h3 {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li a {
+            color: #ddd;
+            transition: color 0.3s;
+        }
+
+        .footer-column ul li a:hover {
+            color: var(--primary-color);
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.2em;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* --- Responsive Styles --- */
+        @media (max-width: 768px) {
+            .main-header {
+                flex-direction: column;
+                padding: 10px 5%;
+            }
+
+            .primary-nav {
+                margin: 15px 0;
+            }
+
+            .user-actions {
+                width: 100%;
+                justify-content: center;
+            }
+
+            body {
+                padding-top: 120px;
+            }
+
+            .themes-hero {
+                height: 300px;
+                padding: 0 20px;
+            }
+
+            .themes-hero h1 {
+                font-size: 2.5em;
+            }
+            
+            .theme-filter button {
+                padding: 10px 10px;
+                font-size: 0.9em;
+            }
+
+            .search-controls {
+                flex-direction: column;
+            }
+
+            .trending-themes {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <div class="logo">Omhwi</div>
+        <nav class="primary-nav">
+            <a href="Index.html">Home</a>
+            <a href="themes.html" class="active-link">Party Themes</a>
+            <a href="corporate.html">Corporate Events</a>
+            <a href="vendor.html" class="vendor-link">Vendor Corner</a>
+        </nav>
+        <div class="user-actions">
+            <input type="text" class="mini-search" placeholder="Quick search...">
+            <i class="fas fa-bell"></i>
+            <i class="fas fa-heart"></i>
+            <div class="account-dropdown">
+                <div class="profile-icon" onclick="toggleDropdown()">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="dropdown-content" id="accountDropdown">
+                    <div class="dropdown-header">
+                        <img src="https://via.placeholder.com/40" alt="Profile">
+                        <div class="user-info">
+                            <h4>Shanti Kaipeng</h4>
+                            <p>shanti@example.com</p>
+                        </div>
+                    </div>
+                    <ul class="dropdown-menu">
+                        <li><a href="account.html"><i class="fas fa-user-circle"></i> My Profile</a></li>
+                        <li><a href="account.html#bookings"><i class="fas fa-calendar-check"></i> My Bookings</a></li>
+                        <li><a href="account.html#saved"><i class="fas fa-heart"></i> Saved Venues</a></li>
+                        <li><a href="#"><i class="fas fa-gift"></i> Birthday Rewards</a></li>
+                        <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                        <li><a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+            <a href="help.html" class="help-btn"><i class="fas fa-headset"></i> Help</a>
+        </div>
+    </header>
+
+    <main class="page-content">
+        
+        <section class="themes-hero">
+            <h1>The Ultimate Birthday Party Theme Hub 🎂</h1>
+            <p>Find the perfect theme for any age, from a first birthday bash to a major milestone celebration. Let's make this year unforgettable!</p>
+            <a href="#themes-grid" class="cta-button">Browse Themes by Age</a>
+        </section>
+
+        <div class="search-controls">
+            <div class="theme-search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="themeSearch" placeholder="Search themes (e.g., '21st', 'Princess', 'Tropical')...">
+            </div>
+        </div>
+
+        <div style="margin-bottom: 30px;">
+            <p style="font-weight: 600; margin-bottom: 10px;">🔥 Trending Birthday Ideas:</p>
+            <div class="trending-themes">
+                <span data-tag="sweet sixteen">Sweet Sixteen</span>
+                <span data-tag="30th">Dirty Thirty</span>
+                <span data-tag="princess">Princess Castle</span>
+                <span data-tag="roaring">Roaring 20s</span>
+                <span data-tag="space">Space Odyssey</span>
+                <span data-tag="rustic">Rustic Vibe</span>
+            </div>
+        </div>
+        
+        <section class="theme-filter">
+            <button class="active" data-filter="all">All Themes</button>
+            <button data-filter="kids">Kids Birthday (Ages 1-12)</button>
+            <button data-filter="teen">Teen & Sweet Sixteen</button>
+            <button data-filter="adult">Adult Celebrations</button>
+            <button data-filter="milestone">Milestone Birthdays</button>
+        </section>
+
+        <section class="theme-grid" id="themes-grid">
+            
+            <div class="theme-card" data-category="adult" data-keywords="elegant cocktail soirée luxury modern chic black tie adult 25th 30th">
+                <img src="https://via.placeholder.com/600x400/3c3c3c/ffffff?text=Elegant+Milestone+Celebration" alt="Elegant Cocktail Soirée" class="theme-image">
+                <div class="theme-info">
+                    <h3>Elegant Milestone Cocktail</h3>
+                    <p>Sophisticated decor, ambient lighting, and personalized touches for an adult birthday gathering.</p>
+                    <a href="venues.html?theme=cocktail" class="view-venues-link">View Venues <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <div class="theme-card" data-category="kids" data-keywords="superhero comic action hero marvel dc kids children 5th 8th">
+                <img src="https://via.placeholder.com/600x400/00bfff/ffffff?text=Superhero+Headquarters+Birthday" alt="Superhero Headquarters" class="theme-image">
+                <div class="theme-info">
+                    <h3>Superhero Headquarters Party</h3>
+                    <p>Action-packed fun with capes, masks, and themed obstacle courses for young heroes aged 4-10.</p>
+                    <a href="venues.html?theme=superhero" class="view-venues-link">View Venues <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <div class="theme-card" data-category="milestone" data-keywords="50th anniversary gold silver milestone elegant adult birthday">
+                <img src="https://via.placeholder.com/600x400/daa520/ffffff?text=Golden+50th+Birthday+Gala" alt="Golden Gala" class="theme-image">
+                <div class="theme-info">
+                    <h3>Golden 50th Birthday Gala</h3>
+                    <p>A luxurious, gold-themed event focusing on celebration and achievement for a major milestone birthday.</p>
+                    <a href="venues.html?theme=golden-gala" class="view-venues-link">View Venues <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <div class="theme-card" data-category="teen" data-keywords="gatsby 1920s roaring twenties sweet sixteen teen vintage retro">
+                <img src="https://via.placeholder.com/600x400/9400d3/ffffff?text=Roaring+Twenties+Sweet+16" alt="Roaring Twenties" class="theme-image">
+                <div class="theme-info">
+                    <h3>Roaring Twenties Birthday Bash</h3>
+                    <p>Feathers, jazz, and flapper dresses for a fun, sophisticated Sweet Sixteen or 18th birthday celebration.</p>
+                    <a href="venues.html?theme=gatsby" class="view-venues-link">View Venues <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <div class="theme-card" data-category="adult" data-keywords="rustic farmhouse bohemian outdoor nature adult 30th 40th">
+                <img src="https://via.placeholder.com/600x400/8b4513/ffffff?text=Rustic+Barn+Birthday+Party" alt="Rustic Barn" class="theme-image">
+                <div class="theme-info">
+                    <h3>Rustic Barnyard Birthday</h3>
+                    <p>Warm wooden decor, fairy lights, and cozy, casual seating. Perfect for a relaxed 30th or 40th birthday.</p>
+                    <a href="venues.html?theme=rustic" class="view-venues-link">View Venues <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <div class="theme-card" data-category="kids" data-keywords="jungle safari animal adventure kids children 1st 3rd">
+                <img src="https://via.placeholder.com/600x400/d2b48c/ffffff?text=Jungle+Safari+Birthday+Adventure" alt="Jungle Safari Adventure" class="theme-image">
+                <div class="theme-info">
+                    <h3>Jungle Safari Adventure Party</h3>
+                    <p>Exotic plants, animal print decor, and a thrilling treasure hunt through the wild jungle for young kids.</p>
+                    <a href="venues.html?theme=jungle" class="view-venues-link">View Venues <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+            
+            <div class="theme-card" data-category="teen" data-keywords="tropical hawaiian luau beach summer exotic outdoor teen 16th">
+                <img src="https://via.placeholder.com/600x400/f08080/ffffff?text=Tropical+Luau+Birthday+Escape" alt="Tropical Luau" class="theme-image">
+                <div class="theme-info">
+                    <h3>Tropical Luau Escape</h3>
+                    <p>Hula skirts, tiki torches, and vibrant floral arrangements. Perfect for a fun, outdoor 16th birthday bash!</p>
+                    <a href="venues.html?theme=luau" class="view-venues-link">View Venues <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <div class="theme-card" data-category="adult" data-keywords="masquerade ball mystery Venetian elegant formal adult 21st 40th">
+                <img src="https://via.placeholder.com/600x400/696969/ffffff?text=Venetian+Masquerade+Birthday" alt="Venetian Masquerade" class="theme-image">
+                <div class="theme-info">
+                    <h3>Venetian Masquerade Birthday</h3>
+                    <p>Enigmatic masks, rich fabrics, and classical music for a night of elegant mystery for an adult birthday.</p>
+                    <a href="venues.html?theme=masquerade" class="view-venues-link">View Venues <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="custom-request-section">
+            <h2>Can't Find Your Dream Birthday Theme?</h2>
+            <p>Our dedicated Venue Specialists can create a fully custom package just for your unique birthday vision. Tell us your age and idea!</p>
+            <a href="custom-request.html" class="custom-cta">Request Custom Birthday Venue</a>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>Omhwi</h3>
+                <p>Making your special events memorable with perfect venues and themes.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-pinterest"></i></a>
+                </div>
+            </div>
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="Index.html">Home</a></li>
+                    <li><a href="themes.html" style="color: var(--primary-color);">Party Themes</a></li>
+                    <li><a href="corporate.html">Corporate Events</a></li>
+                    <li><a href="vendor.html">Vendor Corner</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Support</h3>
+                <ul>
+                    <li><a href="help.html">Help Center</a></li>
+                    <li><a href="#">Safety Center</a></li>
+                    <li><a href="#">Community Guidelines</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Legal</h3>
+                <ul>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Cookie Policy</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2023 Omhwi. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- JavaScript Functions ---
+
+        // Header Dropdown Toggle
+        function toggleDropdown() {
+            document.getElementById("accountDropdown").classList.toggle("show");
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.matches('.profile-icon') && !event.target.matches('.profile-icon *')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const filterButtons = document.querySelectorAll('.theme-filter button');
+            const themeCards = document.querySelectorAll('.theme-card');
+            const searchInput = document.getElementById('themeSearch');
+            const trendingTags = document.querySelectorAll('.trending-themes span');
+            let currentCategoryFilter = 'all';
+
+            // --- Theme Filtering Logic (Categories & Search) ---
+            const filterThemes = (filter, searchTerm) => {
+                currentCategoryFilter = filter;
+                const lowerSearchTerm = searchTerm.toLowerCase().trim();
+
+                themeCards.forEach(card => {
+                    const category = card.getAttribute('data-category');
+                    const keywords = card.getAttribute('data-keywords');
+
+                    const categoryMatch = (filter === 'all' || category === filter);
+                    const searchMatch = (lowerSearchTerm === '' || keywords.includes(lowerSearchTerm));
+                    
+                    if (categoryMatch && searchMatch) {
+                        card.style.display = 'block';
+                        card.classList.remove('hidden');
+                    } else {
+                        card.style.display = 'none';
+                        card.classList.add('hidden');
+                    }
+                });
+            };
+
+            // Event Listeners for Category Buttons
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const filter = button.getAttribute('data-filter');
+
+                    // Update active button state
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+
+                    // Apply filter, preserving current search term
+                    filterThemes(filter, searchInput.value);
+                });
+            });
+
+            // Event Listener for Search Input
+            searchInput.addEventListener('keyup', () => {
+                // When searching, reset category filter to 'all' and update button visual
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                document.querySelector('.theme-filter button[data-filter="all"]').classList.add('active');
+                
+                filterThemes('all', searchInput.value);
+            });
+
+            // Event Listener for Trending Tags
+            trendingTags.forEach(tag => {
+                tag.addEventListener('click', () => {
+                    const tagValue = tag.getAttribute('data-tag');
+                    
+                    // Set search input value
+                    searchInput.value = tagValue;
+                    
+                    // Reset category button
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    document.querySelector('.theme-filter button[data-filter="all"]').classList.add('active');
+                    
+                    // Apply filter based on tag value
+                    filterThemes('all', tagValue);
+                });
+            });
+
+            // Initial filter call
+            filterThemes(currentCategoryFilter, searchInput.value);
+        });
+    </script>
+</body>
+</html>

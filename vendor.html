@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Venue Vendors - Omhwi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- CSS Styles --- */
+        :root {
+            --primary-color: #e84a5f; /* Party Pink */
+            --secondary-color: #3c3c3c; /* Dark Grey */
+            --light-bg: #f5f5f5;
+            --dark-bg: #2c3e50;
+            --card-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            line-height: 1.6;
+            color: var(--secondary-color);
+            background-color: #ffffff;
+            padding-top: 70px; 
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--secondary-color);
+        }
+
+        /* Header Styles - STICKY */
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            background-color: #ffffff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: var(--primary-color);
+            white-space: nowrap;
+        }
+
+        .primary-nav a {
+            margin: 0 15px;
+            font-size: 0.95em;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .primary-nav a:hover {
+            color: var(--primary-color);
+        }
+
+        .vendor-link {
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .mini-search {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 180px;
+            font-size: 0.9em;
+        }
+
+        .user-actions i {
+            font-size: 1.2em;
+            cursor: pointer;
+            color: var(--secondary-color);
+        }
+
+        .profile-icon {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .help-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* Page Content Styles */
+        .page-content {
+            padding: 30px 5%;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-header h1 {
+            font-size: 2.5em;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .page-header p {
+            font-size: 1.1em;
+            max-width: 800px;
+            margin: 0 auto;
+            color: var(--secondary-color);
+        }
+
+        /* Vendor Benefits Section */
+        .vendor-benefits {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .benefit-card {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+            text-align: center;
+        }
+
+        .benefit-card i {
+            font-size: 3em;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .benefit-card h3 {
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .benefit-card p {
+            color: #666;
+        }
+
+        /* How It Works Section */
+        .how-it-works {
+            background: var(--light-bg);
+            padding: 50px;
+            border-radius: 10px;
+            margin-bottom: 50px;
+        }
+
+        .how-it-works h2 {
+            font-size: 2em;
+            margin-bottom: 30px;
+            text-align: center;
+            color: var(--primary-color);
+        }
+
+        .steps {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .step {
+            flex: 1;
+            min-width: 250px;
+            max-width: 300px;
+            text-align: center;
+            position: relative;
+        }
+
+        .step-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            font-size: 1.5em;
+            font-weight: 600;
+            margin: 0 auto 20px;
+        }
+
+        .step h3 {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+        }
+
+        .step p {
+            color: #666;
+        }
+
+        /* Vendor Categories */
+        .vendor-categories {
+            margin-bottom: 50px;
+        }
+
+        .vendor-categories h2 {
+            font-size: 2em;
+            margin-bottom: 30px;
+            text-align: center;
+            color: var(--primary-color);
+        }
+
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .category {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s;
+        }
+
+        .category:hover {
+            transform: translateY(-5px);
+        }
+
+        .category-img {
+            height: 150px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .category-name {
+            padding: 15px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        /* Join Form Section */
+        .join-form-section {
+            background: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 50px;
+        }
+
+        .join-form-section h2 {
+            font-size: 2em;
+            margin-bottom: 30px;
+            text-align: center;
+            color: var(--primary-color);
+        }
+
+        .join-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .form-group textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        .form-submit {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+
+        .form-submit:hover {
+            background-color: #d14153;
+        }
+
+        /* Testimonials Section */
+        .testimonials {
+            margin-bottom: 50px;
+        }
+
+        .testimonials h2 {
+            font-size: 2em;
+            margin-bottom: 30px;
+            text-align: center;
+            color: var(--primary-color);
+        }
+
+        .testimonial-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .testimonial {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .testimonial-content {
+            font-style: italic;
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .author-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .author-info h4 {
+            font-size: 1em;
+            margin-bottom: 3px;
+        }
+
+        .author-info p {
+            font-size: 0.8em;
+            color: #777;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark-bg);
+            color: white;
+            padding: 50px 5% 20px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-column h3 {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column ul li a {
+            color: #ddd;
+            transition: color 0.3s;
+        }
+
+        .footer-column ul li a:hover {
+            color: var(--primary-color);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.2em;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9em;
+            color: #aaa;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 1024px) {
+            .vendor-benefits, .testimonial-container {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-header {
+                flex-direction: column;
+                padding: 10px 5%;
+            }
+
+            .primary-nav {
+                margin: 15px 0;
+            }
+
+            .user-actions {
+                width: 100%;
+                justify-content: center;
+            }
+
+            body {
+                padding-top: 120px;
+            }
+
+            .how-it-works {
+                padding: 30px 20px;
+            }
+
+            .steps {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .categories {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+
+            .page-header h1 {
+                font-size: 2em;
+            }
+
+            .primary-nav a {
+                margin: 0 8px;
+                font-size: 0.85em;
+            }
+
+            .join-form-section {
+                padding: 30px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="main-header">
+        <div class="logo">Omhwi</div>
+        <nav class="primary-nav">
+            <a href="Index.html">Home</a>
+            <a href="themes.html">Party Themes</a>
+            <a href="corporate.html">Corporate Events</a>
+            <a href="vendor.html" class="vendor-link" style="color: var(--primary-color);">Vendor Corner</a>
+        </nav>
+        <div class="user-actions">
+            <input type="text" class="mini-search" placeholder="Quick search...">
+            <i class="fas fa-heart"></i>
+            <div class="account-dropdown">
+                <div class="profile-icon" onclick="toggleDropdown()">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Account</span>
+                </div>
+                <div class="dropdown-content" id="accountDropdown">
+                    <div class="dropdown-header">
+                        <img src="https://via.placeholder.com/40" alt="Profile">
+                        <div class="user-info">
+                            <h4>Shanti Kaipeng</h4>
+                            <p>shanti@example.com</p>
+                        </div>
+                    </div>
+                    <ul class="dropdown-menu">
+                        <li><a href="account.html"><i class="fas fa-user-circle"></i> My Profile</a></li>
+                        <li><a href="account.html#bookings"><i class="fas fa-calendar-check"></i> My Bookings</a></li>
+                        <li><a href="account.html#saved"><i class="fas fa-heart"></i> Saved Venues</a></li>
+                        <li><a href="#"><i class="fas fa-gift"></i> Birthday Rewards</a></li>
+                        <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                        <li><a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+            <button class="help-btn">Help</button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="page-content">
+        <section class="page-header">
+            <h1>Birthday Venue Vendors</h1>
+            <p>Join our network of trusted birthday venue providers and grow your business with Omhwi. Connect with clients looking for the perfect birthday celebration spaces.</p>
+        </section>
+
+        <section class="vendor-benefits">
+            <h2>Why Partner With Us as a Birthday Venue Provider</h2>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon"><i class="fas fa-birthday-cake"></i></div>
+                    <h3>Birthday Venue Bookings</h3>
+                    <p>Connect with thousands of potential clients looking for the perfect birthday venue.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon"><i class="fas fa-chart-line"></i></div>
+                    <h3>Venue Promotion</h3>
+                    <p>Increase your birthday venue bookings through our targeted marketing campaigns.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon"><i class="fas fa-calendar-check"></i></div>
+                    <h3>Simplified Venue Management</h3>
+                    <p>Our streamlined system makes managing birthday venue bookings effortless.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon"><i class="fas fa-star"></i></div>
+                    <h3>Venue Reputation</h3>
+                    <p>Build your birthday venue's reputation through verified reviews from happy celebrants.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="how-it-works">
+            <h2>How It Works</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Register</h3>
+                    <p>Complete our simple registration process and create your vendor profile with all your details.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Showcase</h3>
+                    <p>Upload photos, videos, and information about your services, pricing, and availability.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Connect</h3>
+                    <p>Receive inquiries and booking requests from interested clients through our platform.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Grow</h3>
+                    <p>Expand your business, collect reviews, and build your reputation in the event industry.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="vendor-categories">
+            <h2>Vendor Categories</h2>
+            <div class="categories">
+                <!-- Category 1 -->
+                <div class="category">
+                    <div class="category-img" style="background-image: url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="category-name">Catering</div>
+                </div>
+
+                <!-- Category 2 -->
+                <div class="category">
+                    <div class="category-img" style="background-image: url('https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="category-name">Photography</div>
+                </div>
+
+                <!-- Category 3 -->
+                <div class="category">
+                    <div class="category-img" style="background-image: url('https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="category-name">DJ & Music</div>
+                </div>
+
+                <!-- Category 4 -->
+                <div class="category">
+                    <div class="category-img" style="background-image: url('https://images.unsplash.com/photo-1561731216-c3a4d99437d5?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="category-name">Decoration</div>
+                </div>
+
+                <!-- Category 5 -->
+                <div class="category">
+                    <div class="category-img" style="background-image: url('https://images.unsplash.com/photo-1511795409834-ef04bbd61622?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="category-name">Venues</div>
+                </div>
+
+                <!-- Category 6 -->
+                <div class="category">
+                    <div class="category-img" style="background-image: url('https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="category-name">Entertainment</div>
+                </div>
+
+                <!-- Category 7 -->
+                <div class="category">
+                    <div class="category-img" style="background-image: url('https://images.unsplash.com/photo-1550005809-91ad75fb315f?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="category-name">Bakery</div>
+                </div>
+
+                <!-- Category 8 -->
+                <div class="category">
+                    <div class="category-img" style="background-image: url('https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="category-name">Event Planning</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="join-form-section">
+            <h2>Join Our Vendor Network</h2>
+            <form class="join-form">
+                <div class="form-group">
+                    <label for="business-name">Business Name</label>
+                    <input type="text" id="business-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="contact-name">Contact Person</label>
+                    <input type="text" id="contact-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="category">Service Category</label>
+                    <select id="category" required>
+                        <option value="">Select a category</option>
+                        <option value="catering">Catering</option>
+                        <option value="photography">Photography</option>
+                        <option value="music">DJ & Music</option>
+                        <option value="decoration">Decoration</option>
+                        <option value="venue">Venue</option>
+                        <option value="entertainment">Entertainment</option>
+                        <option value="bakery">Bakery</option>
+                        <option value="planning">Event Planning</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="description">Business Description</label>
+                    <textarea id="description" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="website">Website (Optional)</label>
+                    <input type="url" id="website">
+                </div>
+                <button type="submit" class="form-submit">Submit Application</button>
+            </form>
+        </section>
+
+        <section class="testimonials">
+            <h2>Vendor Success Stories</h2>
+            <div class="testimonial-container">
+                <div class="testimonial">
+                    <p class="testimonial-content">"Joining Omhwi was the best business decision I've made. My catering service has seen a 40% increase in bookings since becoming a vendor partner."</p>
+                    <div class="testimonial-author">
+                        <div class="author-img" style="background-image: url('https://randomuser.me/api/portraits/men/75.jpg');"></div>
+                        <div class="author-info">
+                            <h4>Robert Williams</h4>
+                            <p>Delicious Bites Catering</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial">
+                    <p class="testimonial-content">"As a photographer, I was struggling to find consistent clients. Through Omhwi, I now have bookings almost every weekend and have expanded my team."</p>
+                    <div class="testimonial-author">
+                        <div class="author-img" style="background-image: url('https://randomuser.me/api/portraits/women/62.jpg');"></div>
+                        <div class="author-info">
+                            <h4>Jennifer Lopez</h4>
+                            <p>Capture Moments Photography</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial">
+                    <p class="testimonial-content">"The vendor tools provided by Omhwi have streamlined my event decoration business. I can manage inquiries, bookings, and client communications all in one place."</p>
+                    <div class="testimonial-author">
+                        <div class="author-img" style="background-image: url('https://randomuser.me/api/portraits/men/22.jpg');"></div>
+                        <div class="author-info">
+                            <h4>David Kim</h4>
+                            <p>Elegant Designs</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>Omhwi</h3>
+                <p>Making your special events memorable with perfect venues and themes.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-pinterest"></i></a>
+                </div>
+            </div>
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="Index.html">Home</a></li>
+                    <li><a href="themes.html">Party Themes</a></li>
+                    <li><a href="corporate.html">Corporate Events</a></li>
+                    <li><a href="vendor.html">Vendor Corner</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Support</h3>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Safety Center</a></li>
+                    <li><a href="#">Community Guidelines</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Legal</h3>
+                <ul>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Cookie Policy</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2023 Omhwi. All rights reserved.</p>
+        </div>
+    </footer>
+    <style>
+        /* Account Dropdown Styles */
+        .account-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: #fff;
+            min-width: 220px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1000;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .dropdown-content.show {
+            display: block;
+        }
+
+        .dropdown-header {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+        }
+
+        .dropdown-header img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .user-info h4 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .user-info p {
+            margin: 0;
+            font-size: 12px;
+            color: #777;
+        }
+
+        .dropdown-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .dropdown-menu li {
+            padding: 0;
+        }
+
+        .dropdown-menu a {
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #f5f5f5;
+        }
+
+        .dropdown-menu i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+    </style>
+
+    <script>
+        // Toggle account dropdown
+        function toggleDropdown() {
+            document.getElementById("accountDropdown").classList.toggle("show");
+        }
+
+        // Close dropdown when clicking outside
+        window.onclick = function(event) {
+            if (!event.target.matches('.profile-icon') && !event.target.matches('.profile-icon *')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
