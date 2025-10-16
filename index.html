@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Omhwi - Birthday Venue Booking</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- CSS Styles --- (Updated for Sticky Header and Responsiveness) */
+        :root {
+            --primary-color: #e84a5f; /* Party Pink */
+            --secondary-color: #3c3c3c; /* Dark Grey */
+            --light-bg: #f5f5f5;
+            --dark-bg: #2c3e50;
+            --card-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            line-height: 1.6;
+            color: var(--secondary-color);
+            background-color: #ffffff;
+            /* Added padding to account for the sticky header height */
+            padding-top: 70px; 
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--secondary-color);
+        }
+
+        /* 1. Header Styles - STICKY */
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            background-color: #ffffff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            /* STICKY PROPERTIES */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: var(--primary-color);
+            white-space: nowrap;
+        }
+
+        .primary-nav a {
+            margin: 0 15px;
+            font-size: 0.95em;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .primary-nav a:hover {
+            color: var(--primary-color);
+        }
+
+        .vendor-link {
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .mini-search {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 180px;
+            font-size: 0.9em;
+        }
+
+        .user-actions i {
+            font-size: 1.2em;
+            cursor: pointer;
+            color: var(--secondary-color);
+        }
+
+        .profile-icon {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .help-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* 2. Hero Search Section (Homepage) */
+        .homepage-main, .detail-main {
+            padding: 30px 5%;
+        }
+
+        .hero-search {
+            text-align: center;
+            margin-bottom: 40px;
+            background: var(--light-bg);
+            padding: 40px;
+            border-radius: 10px;
+        }
+
+        .hero-search h1 {
+            font-size: 2.2em;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .search-widget {
+            display: flex;
+            background: white;
+            border-radius: 8px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            margin: 0 auto;
+            max-width: 1100px;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+            padding: 10px 15px;
+            border-right: 1px solid #eee;
+        }
+
+        .input-group:last-of-type {
+            border-right: none;
+        }
+
+        .input-group i {
+            color: var(--primary-color);
+            margin-right: 10px;
+        }
+
+        .input-group input {
+            border: none;
+            outline: none;
+            padding: 5px 0;
+            width: 100%;
+            font-size: 1em;
+        }
+
+        .search-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .search-btn:hover {
+            background-color: #d14153;
+        }
+
+        .quick-filters {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .quick-filters span {
+            background: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            transition: background 0.3s;
+        }
+
+        .quick-filters span:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        /* 3. Promotional/Discovery Sections (Homepage) */
+        .featured-venues, .discover-themes, .local-shortcuts, .assurance-strip {
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+            font-weight: 600;
+            text-align: center;
+        }
+        .featured-venues p {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #666;
+        }
+
+        .venue-carousel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            justify-content: center;
+        }
+
+        .venue-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s;
+            position: relative;
+        }
+
+        .venue-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .venue-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .venue-card h3 {
+            padding: 10px 15px 0;
+            font-size: 1.2em;
+            color: var(--primary-color);
+        }
+
+        .venue-card p {
+            padding: 0 15px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .venue-card .rating {
+            padding: 0 15px 15px;
+            font-size: 0.9em;
+            color: #f39c12;
+        }
+
+        .save-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: white;
+            font-size: 1.5em;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+        }
+
+        /* Assurance Strip */
+        .assurance-strip {
+            display: flex;
+            justify-content: space-around;
+            background-color: var(--dark-bg);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .assurance-strip i {
+            color: #f1c40f;
+            margin-right: 10px;
+        }
+
+        /* Theme/Locality Grid */
+        .theme-grid {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .theme-card {
+            background-color: #ecf0f1;
+            color: var(--secondary-color);
+            padding: 20px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            min-width: 180px;
+            flex-grow: 1;
+        }
+
+        .theme-card i {
+            color: var(--primary-color);
+            margin-right: 5px;
+        }
+
+        .help-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        /* Account Dropdown Styles */
+        .account-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .profile-icon {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            background-color: var(--light-bg);
+            width: 40px;
+            height: 40px;
+            justify-content: center;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: #fff;
+            min-width: 220px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1000;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .dropdown-content.show {
+            display: block;
+        }
+
+        .dropdown-header {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+        }
+
+        .dropdown-header img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .user-info h4 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .user-info p {
+            margin: 0;
+            font-size: 12px;
+            color: #777;
+        }
+
+        .dropdown-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .dropdown-menu li {
+            padding: 0;
+        }
+
+        .dropdown-menu a {
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #f5f5f5;
+        }
+
+        .dropdown-menu i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        .theme-card:hover i {
+            color: white;
+        }
+
+        /* 4. Footer Styles */
+        .main-footer {
+            background-color: var(--dark-bg);
+            color: #ecf0f1;
+            padding: 40px 5%;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            gap: 30px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #3c4f62;
+        }
+
+        .footer-col {
+            flex-basis: 25%;
+        }
+
+        .footer-col h4 {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .footer-col a, .footer-col p {
+            display: block;
+            color: #bdc3c7;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        .vendor-cta {
+            display: inline-block;
+            margin-top: 15px;
+            color: white !important;
+            font-weight: 600;
+        }
+
+        .social-icons i {
+            font-size: 1.4em;
+            margin-right: 15px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .social-icons i:hover {
+            color: var(--primary-color);
+        }
+
+        .payment-icons i, .payment-icons img {
+            font-size: 2em;
+            margin-top: 15px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            font-size: 0.8em;
+            color: #95a5a6;
+        }
+        
+        /* --- Venue Detail Page Styles --- */
+        .detail-container {
+            padding: 30px 5%;
+            display: none; 
+            grid-template-columns: 2fr 1fr; 
+            gap: 30px;
+        }
+        
+        .venue-gallery {
+            margin-bottom: 20px;
+        }
+        
+        .main-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .thumbnail-carousel {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+        }
+        
+        .thumbnail-carousel img {
+            width: 80px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 5px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+        
+        .thumbnail-carousel img:hover, .thumbnail-carousel img.active {
+            opacity: 1;
+            border: 2px solid var(--primary-color);
+        }
+        
+        .venue-header h1 {
+            font-size: 2.5em;
+            color: var(--dark-bg);
+            text-align: left;
+        }
+        
+        .venue-header .rating-detail {
+            font-size: 1.1em;
+            color: #f39c12;
+            margin-bottom: 15px;
+        }
+        
+        .overview-box {
+            background: var(--light-bg);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .overview-box div {
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .overview-box i {
+            color: var(--primary-color);
+            margin-right: 10px;
+        }
+        
+        /* The Customizer Panel (Right Column) - Sticky adjustment for detail page */
+        .customizer-panel {
+            position: sticky;
+            top: 90px; /* Adjusted to be below the sticky header */
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            height: fit-content; /* Important for sticky behavior */
+        }
+        
+        .customizer-panel h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            text-align: left;
+        }
+        
+        .config-group {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #eee;
+        }
+
+        .full-width-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+
+        .capacity-warning {
+            color: red;
+            font-weight: 600;
+            margin-top: 5px;
+            font-size: 0.9em;
+            display: none;
+        }
+        
+        .config-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+            color: var(--secondary-color);
+        }
+        
+        .config-group p {
+            margin-bottom: 8px;
+        }
+        
+        .config-group input[type="radio"],
+        .config-group input[type="checkbox"] {
+            margin-right: 8px;
+            transform: scale(1.1);
+        }
+        
+        /* Theme Selection (Visual Update) */
+        .theme-selection {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .theme-selection img {
+            width: 100px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .theme-selection img:hover,
+        .theme-selection img.selected {
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 10px rgba(232, 74, 95, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        /* Catering Menu Styles (Updated for A La Carte) */
+        .food-menu {
+            border: 1px dashed #eee;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+            background-color: #fdfdfd;
+        }
+        
+        .food-menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+            border-bottom: 1px dotted #f0f0f0;
+        }
+
+        .menu-control {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .menu-control input[type="number"] {
+            width: 60px;
+            text-align: center;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .food-menu-item:last-child {
+            border-bottom: none;
+        }
+        
+        .food-menu-item .price-val {
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+        
+        .menu-note {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 10px;
+            display: block;
+        }
+        
+        /* Dynamic Pricing Box */
+        .price-breakdown {
+            border-top: 2px solid var(--primary-color);
+            padding-top: 20px;
+            margin-top: 25px;
+            background-color: var(--light-bg); 
+            padding: 20px;
+            border-radius: 8px;
+        }
+        
+        .price-breakdown h4 {
+            margin-top: 0;
+            color: var(--dark-bg);
+        }
+        
+        .price-line {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1em;
+            padding: 5px 0;
+        }
+        
+        .total-price-line {
+            font-size: 1.7em; 
+            padding-top: 15px;
+            margin-top: 15px;
+            border-top: 1px solid #ccc;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+        
+        .book-now-btn {
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 1.2em;
+            font-weight: 700;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        
+        .book-now-btn:hover {
+            background-color: #d14153;
+        }
+
+
+        /* --- Media Queries for Responsiveness --- */
+        
+        @media (max-width: 1200px) {
+            .mini-search { width: 150px; }
+            .primary-nav a { margin: 0 10px; }
+        }
+
+        @media (max-width: 900px) {
+            /* GENERAL ADJUSTMENTS */
+            body { padding-top: 120px; } /* Adjust for stacked header */
+            .main-header { flex-wrap: wrap; justify-content: center; gap: 10px; height: 110px; padding: 10px 5%; }
+            .logo { flex-basis: 100%; text-align: center; margin-bottom: 5px; }
+            .primary-nav { order: 3; width: 100%; text-align: center; margin-top: 10px; display: none; } /* Hide main nav on small screens */
+            .user-actions { order: 2; width: 100%; justify-content: space-between; gap: 10px; }
+            .mini-search { width: 100%; order: -1; }
+            .help-btn { order: 10; }
+            
+            /* HOMEPAGE */
+            .search-widget { flex-direction: column; }
+            .input-group { border-right: none; border-bottom: 1px solid #eee; padding: 15px; }
+            .search-btn { padding: 15px; }
+            .footer-content { flex-wrap: wrap; }
+            .footer-col { flex-basis: 45%; margin-bottom: 20px; }
+            .assurance-strip { flex-wrap: wrap; gap: 15px; }
+            .assurance-strip div { flex-basis: 45%; }
+            
+            /* DETAIL PAGE */
+            .detail-container {
+                grid-template-columns: 1fr; /* Stack the columns */
+            }
+            .customizer-panel {
+                position: static; /* Remove sticky on mobile */
+                margin-top: 30px;
+            }
+            .main-image { height: 300px; }
+        }
+
+        @media (max-width: 600px) {
+            body { padding-top: 150px; } /* Adjust for more stacked elements */
+            .main-header { height: 140px; }
+            .user-actions { flex-wrap: wrap; }
+            .user-actions .mini-search { order: -1; flex-basis: 100%; }
+            .user-actions .profile-icon, .user-actions .help-btn { flex-basis: 45%; text-align: center; justify-content: center; }
+
+            .hero-search h1 { font-size: 1.6em; }
+            .footer-col { flex-basis: 100%; }
+            .menu-control { gap: 5px; }
+            .menu-control input[type="number"] { width: 45px; }
+        }
+    </style>
+</head>
+<body onload="showPage('home')">
+
+    <header class="main-header">
+        <div class="logo">Omhwi</div>
+        <nav class="primary-nav">
+            <a href="#" onclick="showPage('home')">Home</a>
+            <a href="themes.html">Party Themes</a>
+            <a href="corporate.html">Corporate Events</a>
+            <a href="vendor.html" class="vendor-link"><i class="fas fa-handshake"></i> Vendor Corner</a>
+        </nav>
+        <div class="user-actions">
+            <input type="text" placeholder="Search Venue Name..." class="mini-search">
+            <i class="fas fa-bell"></i>
+            <i class="fas fa-heart"></i>
+            <div class="account-dropdown">
+                <div class="profile-icon" onclick="toggleDropdown()">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="dropdown-content" id="accountDropdown">
+                    <div class="dropdown-header">
+                        <img src="https://via.placeholder.com/40" alt="Profile">
+                        <div class="user-info">
+                            <h4>Shanti Kaipeng</h4>
+                            <p>shanti@example.com</p>
+                        </div>
+                    </div>
+                    <ul class="dropdown-menu">
+                        <li><a href="account.html"><i class="fas fa-user-circle"></i> My Profile</a></li>
+                        <li><a href="account.html#bookings"><i class="fas fa-calendar-check"></i> My Bookings</a></li>
+                        <li><a href="account.html#saved"><i class="fas fa-heart"></i> Saved Venues</a></li>
+                        <li><a href="#"><i class="fas fa-gift"></i> Birthday Rewards</a></li>
+                        <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                        <li><a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+            <a href="help.html" class="help-btn"><i class="fas fa-headset"></i> Help</a>
+        </div>
+    </header>
+
+    <div id="home-page" style="display: block;">
+        <main class="homepage-main">
+            <section class="hero-search">
+                <h1>Your Bengaluru Birthday Starts Here. Find. Customize. Celebrate.</h1>
+                <div class="search-widget">
+                    <div class="input-group location-group">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <input type="text" placeholder="Locality (e.g., Koramangala, Whitefield)" value="Bengaluru, Karnataka">
+                        <button class="voice-search-btn"><i class="fas fa-microphone"></i></button>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-calendar-alt"></i>
+                        <input type="text" placeholder="Date (dd-mm-yyyy)" onfocus="(this.type='date')">
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-users"></i>
+                        <input type="number" placeholder="Guest Capacity" min="10">
+                    </div>
+                    <button class="search-btn" onclick="showPage('detail')"><i class="fas fa-search"></i> FIND MY VENUE</button>
+                </div>
+                <div class="quick-filters">
+                    <span><i class="fas fa-tag"></i> Budget < ₹15K</span>
+                    <span><i class="fas fa-child"></i> Kids Party Zone</span>
+                    <span><i class="fas fa-cocktail"></i> Rooftop Bars</span>
+                </div>
+            </section>
+
+            <section class="featured-venues">
+                <h2>⭐ Trending Birthday Venues Near You</h2>
+                <p>Handpicked spaces in Koramangala, Indiranagar, and Whitefield.</p>
+                <div class="venue-carousel">
+                    <a href="#" onclick="showPage('detail')" class="venue-card">
+                        <img src="https://via.placeholder.com/300x200/5e35b1/ffffff?text=The+Grand+Orchid" alt="The Grand Orchid, Koramangala">
+                        <h3>The Grand Orchid, Koramangala</h3>
+                        <p>Starts from <span class="price">₹1000 / head</span></p>
+                        <div class="rating">⭐⭐⭐⭐⭐ 4.9 (210)</div>
+                        <i class="fas fa-heart save-icon"></i>
+                    </a>
+                    <a href="#" onclick="showPage('detail')" class="venue-card">
+                        <img src="https://via.placeholder.com/300x200/2980b9/ffffff?text=Skydeck+Lounge" alt="Skydeck Lounge, Indiranagar">
+                        <h3>Skydeck Lounge, Indiranagar</h3>
+                        <p>Starts from <span class="price">₹1500 / head</span></p>
+                        <div class="rating">⭐⭐⭐⭐ 4.5 (85)</div>
+                        <i class="fas fa-heart save-icon"></i>
+                    </a>
+                    <a href="#" onclick="showPage('detail')" class="venue-card">
+                        <img src="https://via.placeholder.com/300x200/2ecc71/ffffff?text=Magnolia+Gardens" alt="Magnolia Gardens, Whitefield">
+                        <h3>Magnolia Gardens, Whitefield</h3>
+                        <p>Starts from <span class="price">₹75,000 Total</span></p>
+                        <div class="rating">⭐⭐⭐⭐ 4.3 (120)</div>
+                        <i class="fas fa-heart save-icon"></i>
+                    </a>
+                    <a href="#" onclick="showPage('detail')" class="venue-card">
+                        <img src="https://via.placeholder.com/300x200/e67e22/ffffff?text=The+Vintage+Bar" alt="The Vintage Bar, Jayanagar">
+                        <h3>The Vintage Bar, Jayanagar</h3>
+                        <p>Starts from <span class="price">₹850 / head</span></p>
+                        <div class="rating">⭐⭐⭐⭐⭐ 4.7 (45)</div>
+                        <i class="fas fa-heart save-icon"></i>
+                    </a>
+                </div>
+            </section>
+
+            <section class="discover-themes">
+                <h2>🎈 Discover Venues by Celebration Type</h2>
+                <div class="theme-grid">
+                    <div class="theme-card"><i class="fas fa-gifts"></i> Kids Party Zone (0-12)</div>
+                    <div class="theme-card"><i class="fas fa-glass-cheers"></i> Milestone Bash (21st, 30th)</div>
+                    <div class="theme-card"><i class="fas fa-crown"></i> Luxury & Anniversary Events</div>
+                    <div class="theme-card"><i class="fas fa-users"></i> Small Gatherings (<50 Guests)</div>
+                </div>
+            </section>
+
+            <section class="local-shortcuts">
+                <h2>Find Venues in Bengaluru's Best Localities</h2>
+                <div class="theme-grid">
+                    <div class="theme-card locality-card"><i class="fas fa-search-location"></i> Koramangala</div>
+                    <div class="theme-card locality-card"><i class="fas fa-search-location"></i> Indiranagar</div>
+                    <div class="theme-card locality-card"><i class="fas fa-search-location"></i> Whitefield</div>
+                    <div class="theme-card locality-card"><i class="fas fa-search-location"></i> Electronic City</div>
+                    <div class="theme-card locality-card"><i class="fas fa-search-location"></i> Jayanagar</div>
+                </div>
+            </section>
+
+            <section class="assurance-strip">
+                <div><i class="fas fa-shield-alt"></i> Verified Venues</div>
+                <div><i class="fas fa-coins"></i> Custom Price Guarantee</div>
+                <div><i class="fas fa-handshake"></i> Instant Booking</div>
+                <div><i class="fas fa-headset"></i> 24/7 Support</div>
+            </section>
+        </main>
+    </div>
+
+    <div id="detail-page" style="display: none;">
+        <main class="detail-main">
+            <section class="detail-container">
+                <div class="venue-details">
+                    <div class="venue-header">
+                        <h1>The Grand Orchid, Koramangala</h1>
+                        <p class="rating-detail">⭐⭐⭐⭐⭐ 4.9/5 (210 Reviews) - <span style="color: green;">Venue Verified</span></p>
+                    </div>
+
+                    <div class="venue-gallery">
+                        <img src="https://via.placeholder.com/800x400/5e35b1/ffffff?text=The+Grand+Orchid+Main+View" alt="Main Venue Image" class="main-image">
+                        <div class="thumbnail-carousel">
+                            <img src="https://via.placeholder.com/300x200/5e35b1/ffffff?text=Gallery+1" alt="Thumbnail 1" class="active">
+                            <img src="https://via.placeholder.com/300x200/5e35b1/ffffff?text=Gallery+2" alt="Thumbnail 2">
+                            <img src="https://via.placeholder.com/300x200/5e35b1/ffffff?text=Gallery+3" alt="Thumbnail 3">
+                            <img src="https://via.placeholder.com/300x200/5e35b1/ffffff?text=Gallery+4" alt="Thumbnail 4">
+                        </div>
+                    </div>
+
+                    <h2>Venue Overview</h2>
+                    <div class="overview-box">
+                        <div><i class="fas fa-map-marker-alt"></i> **Address:** 8th Block, Koramangala, Bengaluru</div>
+                        <div><i class="fas fa-users"></i> **Capacity:** Min 50 / Max 300 Guests</div>
+                        <div><i class="fas fa-car"></i> **Parking:** Valet Parking Available for 80 Cars</div>
+                        <div><i class="fas fa-calendar-check"></i> **Next Available Date:** October 20, 2024</div>
+                        <div style="margin-top: 15px;">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.0833215560945!2d77.7288636!3d12.9669527!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae1397b2f671e1%3A0x86733c3f8e5f22e8!2sWhitefield%2C%20Bengaluru%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                        </div>
+                    </div>
+
+                    <h2>User Reviews (210)</h2>
+                    <div class="review-section">
+                        <p>Detailed user reviews and ratings will be loaded here...</p>
+                    </div>
+
+                </div>
+
+                <aside class="customizer-panel">
+                    <h3>Build Your Birthday Package</h3>
+
+                    <div class="config-group" data-base-venue-rent="60000" data-max-capacity="300">
+                        <label for="event-date">Event Date</label>
+                        <input type="date" id="event-date" class="full-width-input" value="2024-10-20">
+                    </div>
+
+                    <div class="config-group">
+                        <label for="guest-capacity">Guest Capacity (Min 50 - Max 300)</label>
+                        <input type="number" id="guest-capacity" value="100" min="50" max="300" class="full-width-input">
+                        <p class="capacity-warning" id="capacity-warning"><i class="fas fa-exclamation-triangle"></i> Exceeds Max Capacity (300)!</p>
+                        <small style="color: gray;">Base Venue Rent: <span id="base-rent-display">₹60,000</span></small>
+                    </div>
+
+                    <div class="config-group">
+                        <label>Decoration Theme (Select one for all ages!)</label>
+                        <div class="theme-selection" id="decoration-themes">
+                            <img src="https://via.placeholder.com/100x70/f1c40f/ffffff?text=Elegant+Gold" alt="Elegant Gold & White" data-theme-name="Elegant Gold & White" data-price="20000">
+                            <img src="https://via.placeholder.com/100x70/e74c3c/ffffff?text=Kids+Carnival" alt="Vibrant Kids Carnival" data-theme-name="Vibrant Kids Carnival" data-price="18000">
+                            <img src="https://via.placeholder.com/100x70/27ae60/ffffff?text=Rustic+Garden" alt="Rustic Garden Chic" data-theme-name="Rustic Garden Chic" data-price="22000">
+                            <img src="https://via.placeholder.com/100x70/8e44ad/ffffff?text=Custom" alt="Custom Theme (Request)" data-theme-name="Custom Theme" data-price="0" class="selected">
+                        </div>
+                        <small>Selected: <span id="selected-decor-name">Custom Theme</span> (<span id="selected-decor-price">₹0</span>)</small>
+                    </div>
+
+                    <div class="config-group food-options" id="food-catering-options">
+                        <label>Food Catering Options (Select Type, then Items)</label>
+                        <p>
+                            <input type="radio" name="food-type" id="food-veg" value="veg" checked>
+                            <label for="food-veg">Veg Only</label>
+                        </p>
+                        <p>
+                            <input type="radio" name="food-type" id="food-nonveg" value="non-veg">
+                            <label for="food-nonveg">Both Veg & Non-Veg</label>
+                        </p>
+                        <p>
+                            <input type="radio" name="food-type" id="food-outsourced" value="outsourced" data-outsourcing-fee="2500">
+                            <label for="food-outsourced">Outsourced Catering (+₹2,500 Fee)</label>
+                        </p>
+
+                        <div class="food-menu" id="veg-menu" style="display: block;">
+                            <label style="font-weight: 600; margin-top: 10px; color: var(--primary-color);">Veg Menu Items (A La Carte)</label>
+                            
+                            <div class="food-menu-item" data-price-per-head="150">
+                                <span><input type="checkbox" class="menu-item-check" data-item-name="Veg Biryani" data-price="150" > Veg Biryani</span>
+                                <div class="menu-control">
+                                    <span class="price-val">₹150/head</span>
+                                    <input type="number" class="menu-item-qty" value="0" min="0" max="300" disabled>
+                                </div>
+                            </div>
+
+                            <div class="food-menu-item" data-price-per-head="200">
+                                <span><input type="checkbox" class="menu-item-check" data-item-name="Paneer Tikka" data-price="200"> Paneer Tikka</span>
+                                <div class="menu-control">
+                                    <span class="price-val">₹200/head</span>
+                                    <input type="number" class="menu-item-qty" value="0" min="0" max="300" disabled>
+                                </div>
+                            </div>
+
+                            <div class="food-menu-item" data-price-per-head="100">
+                                <span><input type="checkbox" class="menu-item-check" data-item-name="Dessert Platter" data-price="100"> Dessert Platter</span>
+                                <div class="menu-control">
+                                    <span class="price-val">₹100/head</span>
+                                    <input type="number" class="menu-item-qty" value="0" min="0" max="300" disabled>
+                                </div>
+                            </div>
+                            <small class="menu-note">Check the box and set quantity (number of plates/servings) to add to the total.</small>
+                        </div>
+
+                        <div class="food-menu" id="nonveg-menu" style="display: none;">
+                            <label style="font-weight: 600; margin-top: 10px; color: var(--primary-color);">Non-Veg Menu Items (A La Carte)</label>
+                            
+                            <div class="food-menu-item" data-price-per-head="250">
+                                <span><input type="checkbox" class="menu-item-check" data-item-name="Chicken Biryani" data-price="250"> Chicken Biryani</span>
+                                <div class="menu-control">
+                                    <span class="price-val">₹250/head</span>
+                                    <input type="number" class="menu-item-qty" value="0" min="0" max="300" disabled>
+                                </div>
+                            </div>
+
+                            <div class="food-menu-item" data-price-per-head="300">
+                                <span><input type="checkbox" class="menu-item-check" data-item-name="Butter Chicken" data-price="300"> Butter Chicken</span>
+                                <div class="menu-control">
+                                    <span class="price-val">₹300/head</span>
+                                    <input type="number" class="menu-item-qty" value="0" min="0" max="300" disabled>
+                                </div>
+                            </div>
+                            <small class="menu-note">Check the box and set quantity (number of plates/servings) to add to the total.</small>
+                        </div>
+
+                        <div id="outsourced-note" style="display: none; color: red; margin-top: 10px;">
+                            <small>You've selected outsourced catering. A flat fee of **₹2,500** will be added. No A La Carte menu items will be charged.</small>
+                        </div>
+                    </div>
+
+                    <div class="config-group">
+                        <label>Additional Services</label>
+                        <p>
+                            <input type="checkbox" id="service-dj" checked data-price="0" disabled>
+                            <label for="service-dj">DJ / Sound System (<span style="color: green;">Included - Free</span>)</label>
+                        </p>
+                        <p>
+                            <input type="checkbox" id="service-photo" data-price="12000">
+                            <label for="service-photo">Photography & Videography (+₹12,000)</label>
+                        </p>
+                    </div>
+
+                    <div class="config-group cake-config">
+                        <label>Cake Flavor & Design</label>
+                        <select id="cake-flavor" class="full-width-input" style="margin-bottom: 10px;">
+                            <option value="chocolate-truffle" data-price-per-kg="1200">Chocolate Truffle (₹1200/Kg)</option>
+                            <option value="red-velvet" data-price-per-kg="1500">Red Velvet (₹1500/Kg)</option>
+                            <option value="butterscotch" data-price-per-kg="1000" selected>Classic Butterscotch (₹1000/Kg)</option>
+                            <option value="custom" data-price-per-kg="0">Custom Design (Request Quote)</option>
+                        </select>
+                        
+                        <label for="cake-size" style="margin-top: 10px;">Size (in Kg)</label>
+                        <input type="number" id="cake-size" placeholder="e.g., 2 Kg" value="1" min="1" class="full-width-input">
+                        
+                        <label for="cake-quantity" style="margin-top: 10px;">How many cakes do you want?</label>
+                        <input type="number" id="cake-quantity" placeholder="Quantity" value="1" min="1" class="full-width-input">
+
+                        <label for="cake-name" style="margin-top: 10px;">Name/Message on Cake</label>
+                        <input type="text" id="cake-name" placeholder="e.g., 'Happy 30th Arjun'" value="Happy Birthday" class="full-width-input">
+                    </div>
+
+                    <div class="config-group">
+                        <label>More Fun Add-ons!</label>
+                        <p>
+                            <input type="checkbox" id="add-on-gifts" data-price="5000">
+                            <label for="add-on-gifts">Return Gifts (Basic - +₹5,000)</label>
+                        </p>
+                        <p>
+                            <input type="checkbox" id="add-on-live-counter" data-price="10000">
+                            <label for="add-on-live-counter">Live Food Counter (e.g., Pasta/Chaat - +₹10,000)</label>
+                        </p>
+                        <p>
+                            <input type="checkbox" id="add-on-games" data-price="7000">
+                            <label for="add-on-games">Games & Activities Coordinator (+₹7,000)</label>
+                        </p>
+                    </div>
+
+                    <div class="price-breakdown">
+                        <h4>Price Summary</h4>
+                        <div class="price-line"><span>Venue Rent (Base)</span> <span id="p-rent">₹60,000</span></div>
+                        <div class="price-line"><span>Decoration (<span id="summary-decor-name">Custom Theme</span>)</span> <span id="p-decor">₹0</span></div>
+                        <div class="price-line"><span>Catering (<span id="summary-catering-type">Veg Only (A La Carte)</span>)</span> <span id="p-catering">₹0</span></div>
+                        <div class="price-line" id="p-outsourcing-line" style="display: none;"><span>Outsourcing Fee</span> <span id="p-outsourcing">₹2,500</span></div>
+                        <div class="price-line" id="p-dj-line"><span>DJ / Sound System</span> <span id="p-dj">₹0</span></div>
+                        <div class="price-line" id="p-photo-line" style="display: none;"><span>Photography & Video</span> <span id="p-photo">₹0</span></div>
+                        <div class="price-line"><span>Cake (<span id="summary-cake-qty">1</span> x <span id="summary-cake-size">1 Kg</span> <span id="summary-cake-flavor">Classic Butterscotch</span>)</span> <span id="p-cake">₹1,000</span></div>
+                        <div class="price-line" id="p-gifts-line" style="display: none;"><span>Return Gifts</span> <span id="p-gifts">₹0</span></div>
+                        <div class="price-line" id="p-live-counter-line" style="display: none;"><span>Live Food Counter</span> <span id="p-live-counter">₹0</span></div>
+                        <div class="price-line" id="p-games-line" style="display: none;"><span>Games Coordinator</span> <span id="p-games">₹0</span></div>
+                        <div class="price-line"><span>Tax (18% GST)</span> <span id="p-tax">₹11,160</span></div>
+                        <div class="total-price-line"><span>TOTAL PAYABLE</span> <span id="p-total">₹72,160</span></div>
+                    </div>
+
+                    <button class="book-now-btn">BOOK NOW</button>
+                </aside>
+            </section>
+        </main>
+    </div>
+
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-col brand-info">
+                <h4>Bengaluru Bashes</h4>
+                <p>The easiest way to book your perfect birthday venue in Namma Bengaluru.</p>
+                <a href="#" class="vendor-cta">List Your Venue Now <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <a href="#">About Us</a>
+                <a href="#">Careers</a>
+                <a href="#">Party Blog</a>
+                <a href="#">FAQs</a>
+            </div>
+            <div class="footer-col">
+                <h4>Legal & Support</h4>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Cancellation Policy</a>
+                <a href="#">Contact Support</a>
+            </div>
+            <div class="footer-col">
+                <h4>Connect</h4>
+                <div class="social-icons">
+                    <i class="fab fa-facebook-f"></i>
+                    <i class="fab fa-instagram"></i>
+                    <i class="fab fa-twitter"></i>
+                </div>
+                <p class="payment-icons">
+                    <i class="fab fa-cc-visa"></i>
+                    <i class="fab fa-cc-mastercard"></i>
+                    <i class="fas fa-credit-card"></i>
+                    <img src="https://via.placeholder.com/20/000000/ffffff?text=UPI" alt="UPI" style="width: 30px; height: 20px; object-fit: contain;">
+                </p>
+            </div>
+        </div>
+        <div class="copyright">
+            © 2024 Bengaluru Bashes. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        // --- JavaScript Logic for Dynamic Page Switching and Pricing ---
+
+        // Account Dropdown Toggle
+        function toggleDropdown() {
+            const dropdown = document.getElementById('accountDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // Close dropdown when clicking outside
+        window.onclick = function(event) {
+            if (!event.target.matches('.profile-icon') && !event.target.closest('.profile-icon')) {
+                const dropdowns = document.getElementsByClassName('dropdown-content');
+                for (let i = 0; i < dropdowns.length; i++) {
+                    const openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+
+        // 1. Page Switching Logic
+        function showPage(pageId) {
+            document.getElementById('home-page').style.display = 'none';
+            document.getElementById('detail-page').style.display = 'none';
+
+            if (pageId === 'home') {
+                document.getElementById('home-page').style.display = 'block';
+            } else if (pageId === 'detail') {
+                document.getElementById('detail-page').style.display = 'block';
+                document.querySelector('.detail-container').style.display = 'grid';
+                // Initialize settings/recalculate price when the detail page is shown
+                updateTotalPrice();
+            }
+            window.scrollTo(0, 0); 
+        }
+
+        // 2. Dynamic Pricing Logic
+        function formatCurrency(amount) {
+            return '₹' + new Intl.NumberFormat('en-IN').format(Math.round(amount));
+        }
+
+        function updateTotalPrice() {
+            let total = 0;
+            const guestCapacityInput = document.getElementById('guest-capacity');
+            const guestCapacity = parseInt(guestCapacityInput.value) || 0;
+            const baseVenueRent = parseFloat(document.querySelector('.config-group[data-base-venue-rent]').dataset.baseVenueRent) || 0;
+            const maxCapacity = parseFloat(document.querySelector('.config-group[data-max-capacity]').dataset.maxCapacity) || 300;
+            const taxRate = 0.18; 
+
+            // Capacity Warning Logic
+            const warningEl = document.getElementById('capacity-warning');
+            if (guestCapacity > maxCapacity) {
+                warningEl.style.display = 'block';
+                warningEl.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Exceeds Max Capacity (${maxCapacity})!`;
+            } else {
+                warningEl.style.display = 'none';
+            }
+
+
+            // --- 1. Base Venue Rent (FIXED) ---
+            total += baseVenueRent;
+            document.getElementById('p-rent').textContent = formatCurrency(baseVenueRent);
+
+            // --- 2. Decoration Theme ---
+            const selectedDecorElement = document.querySelector('#decoration-themes img.selected');
+            const decorPrice = selectedDecorElement ? parseFloat(selectedDecorElement.dataset.price) : 0;
+            const decorName = selectedDecorElement ? selectedDecorElement.dataset.themeName : 'Custom Theme';
+            
+            total += decorPrice;
+            document.getElementById('p-decor').textContent = formatCurrency(decorPrice);
+            document.getElementById('summary-decor-name').textContent = decorName;
+            document.getElementById('selected-decor-price').textContent = formatCurrency(decorPrice);
+            document.getElementById('selected-decor-name').textContent = decorName;
+
+
+            // --- 3. Food Catering (A La Carte Logic) ---
+            let cateringPrice = 0;
+            let cateringType = '';
+            
+            // Hide all sub-sections first
+            document.getElementById('p-outsourcing-line').style.display = 'none';
+            document.getElementById('veg-menu').style.display = 'none';
+            document.getElementById('nonveg-menu').style.display = 'none';
+            document.getElementById('outsourced-note').style.display = 'none';
+
+            const selectedFoodType = document.querySelector('input[name="food-type"]:checked')?.value || 'veg';
+
+            if (selectedFoodType === 'veg' || selectedFoodType === 'non-veg') {
+                
+                cateringType = selectedFoodType === 'veg' ? 'Veg Only (A La Carte)' : 'Both Veg & Non-Veg (A La Carte)';
+                const menuContainer = document.getElementById(selectedFoodType === 'veg' ? 'veg-menu' : 'nonveg-menu');
+                menuContainer.style.display = 'block';
+
+                // Calculate total based on selected items
+                menuContainer.querySelectorAll('.food-menu-item').forEach(itemEl => {
+                    const checkbox = itemEl.querySelector('.menu-item-check');
+                    const qtyInput = itemEl.querySelector('.menu-item-qty');
+                    
+                    if (checkbox && qtyInput) {
+                        const itemPricePerHead = parseFloat(checkbox.dataset.price) || 0;
+                        const itemQty = checkbox.checked ? parseInt(qtyInput.value) || 0 : 0;
+                        cateringPrice += itemPricePerHead * itemQty;
+                        
+                        // Enable/Disable quantity input based on checkbox status
+                        qtyInput.disabled = !checkbox.checked;
+                    }
+                });
+            } 
+            else if (selectedFoodType === 'outsourced') {
+                const outsourcingFee = parseFloat(document.getElementById('food-outsourced').dataset.outsourcing-fee) || 0;
+                cateringPrice = outsourcingFee; 
+                document.getElementById('p-outsourcing-line').style.display = 'flex';
+                document.getElementById('p-outsourcing').textContent = formatCurrency(outsourcingFee);
+                cateringType = 'Outsourced';
+                document.getElementById('outsourced-note').style.display = 'block';
+            }
+            
+            total += cateringPrice;
+            document.getElementById('p-catering').textContent = formatCurrency(cateringPrice);
+            document.getElementById('summary-catering-type').textContent = cateringType;
+
+            // --- 4. Additional Services (Photo/Video) ---
+            let photoVideoPrice = 0;
+            if (document.getElementById('service-photo').checked) {
+                photoVideoPrice = parseFloat(document.getElementById('service-photo').dataset.price);
+            }
+            total += photoVideoPrice;
+            document.getElementById('p-photo').textContent = formatCurrency(photoVideoPrice);
+            document.getElementById('p-photo-line').style.display = photoVideoPrice > 0 ? 'flex' : 'none';
+            document.getElementById('p-dj').textContent = formatCurrency(0); // DJ is fixed free
+
+
+            // --- 5. Cake Configuration ---
+            const cakeFlavorSelect = document.getElementById('cake-flavor');
+            const selectedCakeOption = cakeFlavorSelect.options[cakeFlavorSelect.selectedIndex];
+            const pricePerKg = parseFloat(selectedCakeOption.dataset.pricePerKg) || 0;
+            const cakeSize = parseFloat(document.getElementById('cake-size').value) || 0;
+            const cakeQuantity = parseInt(document.getElementById('cake-quantity').value) || 0;
+
+            let cakePrice = pricePerKg * cakeSize * cakeQuantity;
+            
+            if (selectedCakeOption.value === 'custom') {
+                cakePrice = 0; // Custom means price on request/quote
+                document.getElementById('summary-cake-flavor').textContent = 'Custom Design (Quote)';
+            } else {
+                document.getElementById('summary-cake-flavor').textContent = selectedCakeOption.textContent.split('(')[0].trim();
+            }
+            document.getElementById('summary-cake-size').textContent = cakeSize + ' Kg';
+            document.getElementById('summary-cake-qty').textContent = cakeQuantity;
+
+            total += cakePrice;
+            document.getElementById('p-cake').textContent = formatCurrency(cakePrice);
+
+
+            // --- 6. More Add-ons ---
+            const addons = [
+                {id: 'add-on-gifts', priceElementId: 'p-gifts', lineId: 'p-gifts-line'},
+                {id: 'add-on-live-counter', priceElementId: 'p-live-counter', lineId: 'p-live-counter-line'},
+                {id: 'add-on-games', priceElementId: 'p-games', lineId: 'p-games-line'}
+            ];
+
+            addons.forEach(addon => {
+                let addonPrice = 0;
+                const checkbox = document.getElementById(addon.id);
+                if (checkbox.checked) {
+                    addonPrice = parseFloat(checkbox.dataset.price);
+                }
+                total += addonPrice;
+                document.getElementById(addon.priceElementId).textContent = formatCurrency(addonPrice);
+                document.getElementById(addon.lineId).style.display = addonPrice > 0 ? 'flex' : 'none';
+            });
+
+
+            // --- 7. Calculate Tax (18% GST) ---
+            const taxAmount = total * taxRate;
+            const finalTotal = total + taxAmount;
+            document.getElementById('p-tax').textContent = formatCurrency(taxAmount);
+            document.getElementById('p-total').textContent = formatCurrency(finalTotal);
+        }
+
+        // --- Event Listeners Setup ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Listeners for Customizer Panel
+            const customizer = document.getElementById('detail-page');
+
+            if (customizer) {
+                // List of simple input/select/checkbox changes that trigger recalculation
+                const simpleElements = [
+                    'guest-capacity', 'cake-flavor', 'cake-size', 'cake-quantity', 
+                    'service-photo', 'add-on-gifts', 'add-on-live-counter', 'add-on-games', 'cake-name'
+                ];
+
+                simpleElements.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.addEventListener(el.type === 'number' || el.type === 'text' || el.type === 'date' ? 'input' : 'change', updateTotalPrice);
+                });
+
+                // Decoration Themes Listener
+                document.querySelectorAll('#decoration-themes img').forEach(img => {
+                    img.addEventListener('click', function() {
+                        document.querySelectorAll('#decoration-themes img').forEach(item => item.classList.remove('selected'));
+                        this.classList.add('selected');
+                        updateTotalPrice();
+                    });
+                });
+
+                // Food Catering Type and A La Carte Listeners
+                document.querySelectorAll('input[name="food-type"]').forEach(radio => {
+                    radio.addEventListener('change', updateTotalPrice);
+                });
+                
+                // A La Carte Items and Quantity Listeners (Crucial for Quantity Helper)
+                document.querySelectorAll('.food-menu').forEach(menu => {
+                    menu.addEventListener('change', (e) => {
+                        const checkbox = e.target;
+                        if (checkbox.classList.contains('menu-item-check')) {
+                            const qtyInput = checkbox.closest('.food-menu-item').querySelector('.menu-item-qty');
+                            const guestCapacity = parseInt(document.getElementById('guest-capacity').value) || 0;
+
+                            if (checkbox.checked) {
+                                // FEATURE: Auto-set quantity to Guest Capacity when checked
+                                qtyInput.value = guestCapacity > 0 ? guestCapacity : 100; // Default to 100 if capacity is zero/invalid
+                                qtyInput.disabled = false;
+                            } else {
+                                qtyInput.value = 0;
+                                qtyInput.disabled = true;
+                            }
+                            updateTotalPrice();
+                        } else if (e.target.classList.contains('menu-item-qty')) {
+                            updateTotalPrice();
+                        }
+                    });
+                    menu.addEventListener('input', (e) => {
+                        if (e.target.classList.contains('menu-item-qty')) {
+                            updateTotalPrice();
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>
