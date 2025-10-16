@@ -1,0 +1,1517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Management Dashboard - Advanced Features</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Chart.js for visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-light: #6366f1;
+            --success-color: #10b981;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .sidebar-item {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .sidebar-item:hover {
+            background-color: var(--primary-light);
+            color: white;
+            transform: scale(1.02);
+        }
+        .sidebar-item.active {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.4);
+        }
+        .card {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .price-input, .item-input {
+            border: 1px solid #d1d5db;
+            padding: 8px;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            transition: border-color 0.2s;
+        }
+        .item-input:focus, .price-input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+        .dynamic-list-item {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background-color: #fff;
+            padding: 12px;
+            border-radius: 10px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            border: 1px solid #eee;
+        }
+        .flex-row-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+        /* Custom Upload/Link Input Styling */
+        .upload-link-group {
+            display: flex;
+            align-items: center;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .upload-link-input {
+            flex-grow: 1;
+            padding: 8px;
+            border: none;
+            outline: none;
+            font-size: 0.875rem;
+        }
+        .upload-link-button {
+            padding: 8px 12px;
+            background-color: var(--success-color);
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .upload-link-button:hover {
+            background-color: #059669;
+        }
+        .upload-link-group:focus-within {
+             border-color: var(--primary-color);
+        }
+        /* Enhanced chart size */
+        .chart-container {
+            height: 384px; /* h-96 */
+        }
+        @media (max-width: 1024px) {
+            .chart-container {
+                height: 300px; /* Adjust slightly for mobile */
+            }
+        }
+        
+        /* Styles for Collapsible Panels */
+        .accordion-panel {
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+            background-color: white;
+        }
+        .accordion-header {
+            cursor: pointer;
+            padding: 1rem 1.5rem;
+            background-color: #f9fafb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.125rem; /* text-lg */
+            font-weight: 700; /* font-bold */
+            color: var(--primary-color);
+            transition: background-color 0.2s;
+        }
+        .accordion-header:hover {
+            background-color: #eff6ff;
+        }
+        .accordion-content {
+            padding: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="min-h-screen flex flex-col lg:flex-row">
+        
+        <!-- Sidebar Navigation -->
+        <div class="lg:w-64 bg-gray-800 text-white shadow-xl flex-shrink-0 p-4 lg:p-6">
+            <h1 class="text-3xl font-extrabold mb-8 text-indigo-400">Venue Central</h1>
+            
+            <div class="mb-8 p-3 rounded-lg bg-gray-700">
+                <p class="text-lg font-semibold">Stark Venue Management</p>
+                <p class="text-sm text-gray-400" id="vendor-id">Vendor ID: STK-809</p>
+            </div>
+
+            <nav>
+                <a id="nav-dashboard" class="sidebar-item active block p-3 rounded-lg mb-2 text-base font-medium" onclick="switchView('dashboard')">
+                    <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
+                </a>
+                <a id="nav-venues" class="sidebar-item block p-3 rounded-lg mb-2 text-base font-medium" onclick="switchView('venues')">
+                    <i class="fas fa-list-alt mr-2"></i> Venue Listings
+                </a>
+                <a id="nav-bookings" class="sidebar-item block p-3 rounded-lg mb-2 text-base font-medium" onclick="switchView('bookings')">
+                    <i class="fas fa-calendar-check mr-2"></i> Booking Management
+                </a>
+                <a id="nav-reports" class="sidebar-item block p-3 rounded-lg mb-2 text-base font-medium" onclick="switchView('reports')">
+                    <i class="fas fa-chart-line mr-2"></i> Reports & Analytics
+                </a>
+                <a id="nav-profile" class="sidebar-item block p-3 rounded-lg mb-2 text-base font-medium" onclick="switchView('profile')">
+                    <i class="fas fa-cogs mr-2"></i> Settings & Profile
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content Area -->
+        <main class="flex-grow p-4 lg:p-10">
+            <header class="mb-8" id="main-header">
+                <h2 class="text-4xl font-bold text-gray-900">Welcome Back, Omhwi!</h2>
+                <p class="text-gray-600 mt-1">Manage your venue listings and reservations for Omhwi Birthday Bookings.</p>
+            </header>
+
+            <!-- Loading Indicator -->
+            <div id="loading" class="text-center p-10 hidden">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500 mx-auto mb-3"></div>
+                <p class="text-gray-600">Loading data...</p>
+            </div>
+
+            <!-- Dashboard View -->
+            <section id="view-dashboard" class="current-view space-y-8">
+                <h3 class="text-2xl font-semibold text-gray-800 border-b pb-2">Key Metrics Overview</h3>
+                
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="card bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                        <p class="text-sm font-medium text-gray-500">Total Booking Value (L30D)</p>
+                        <p class="text-3xl font-extrabold text-gray-900 mt-1">₹15,52,000</p>
+                        <span class="text-sm text-green-600 font-semibold flex items-center"><i class="fas fa-arrow-up mr-1 text-xs"></i> +18.1% vs Last Month</span>
+                    </div>
+                    <div class="card bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                        <p class="text-sm font-medium text-gray-500">New Reservations (L7D)</p>
+                        <p class="text-3xl font-extrabold text-gray-900 mt-1">14</p>
+                        <span class="text-sm text-red-600 font-semibold flex items-center"><i class="fas fa-arrow-down mr-1 text-xs"></i> -3.2% vs Last Week</span>
+                    </div>
+                    <div class="card bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                        <p class="text-sm font-medium text-gray-500">30-Day Occupancy Rate</p>
+                        <p class="text-3xl font-extrabold text-gray-900 mt-1">65%</p>
+                        <span class="text-sm text-green-600 font-semibold">Target: 70%+</span>
+                    </div>
+                    <div class="card bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                        <p class="text-sm font-medium text-gray-500">Venue Page Views (Today)</p>
+                        <p class="text-3xl font-extrabold text-gray-900 mt-1">4,231</p>
+                        <span class="text-sm text-green-600 font-semibold flex items-center"><i class="fas fa-arrow-up mr-1 text-xs"></i> +22% vs Yesterday</span>
+                    </div>
+                </div>
+
+                <!-- Charts Section: Increased Height for better visibility -->
+                <h3 class="text-2xl font-semibold text-gray-800 border-b pb-2 pt-4">Venue Growth & Performance</h3>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                        <h4 class="text-xl font-semibold mb-4 text-gray-800">Booking Value vs. Venue Visits (Last 6 Months)</h4>
+                        <div class="chart-container">
+                             <canvas id="bookingVisitsChart" class="w-full h-full"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                        <h4 class="text-xl font-semibold mb-4 text-gray-800">Venue Category Distribution (Active Listings)</h4>
+                        <div class="chart-container">
+                            <canvas id="venueGrowthChart" class="w-full h-full"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Venues View (UPDATED: Sticky Header and Search Bar) -->
+            <section id="view-venues" class="current-view hidden space-y-6">
+                 <!-- STICKY HEADER AND SEARCH IMPLEMENTATION -->
+                 <div class="sticky top-0 z-10 bg-white/95 backdrop-blur-sm p-4 -mx-4 lg:-mx-10 border-b border-gray-200 shadow-sm">
+                    <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+                        <h3 class="text-2xl font-semibold text-gray-800">Venue Listings (<span id="venue-count">4</span> Active Venues)</h3>
+                        <div class="flex space-x-3 w-full md:w-auto">
+                            <!-- SEARCH/QUERY INPUT -->
+                            <input type="text" id="venueSearchInput" onkeyup="filterVenues(this.value)" placeholder="Search by venue name or ID..." class="item-input flex-grow md:flex-none md:w-64">
+                            <button onclick="openVenueModal()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-indigo-700 transition duration-150 shadow-md flex-shrink-0 flex items-center justify-center">
+                                <i class="fas fa-plus mr-1"></i> Add New Venue
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- END STICKY HEADER -->
+
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Venue Name & Capacity</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Daily Price</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Services Configured</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="venue-list" class="bg-white divide-y divide-gray-200">
+                            <!-- Venue rows will be dynamically inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Bookings View (Enhanced with Search, Filter, and Actions) -->
+            <section id="view-bookings" class="current-view hidden space-y-6">
+                <!-- STICKY HEADER AND SEARCH/FILTER IMPLEMENTATION -->
+                <div class="sticky top-0 z-10 bg-white/95 backdrop-blur-sm p-4 -mx-4 lg:-mx-10 border-b border-gray-200 shadow-sm">
+                    <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+                        <h3 class="text-2xl font-semibold text-gray-800">Booking Management (<span id="booking-count">2</span> Active)</h3>
+                        <div class="flex space-x-3 w-full md:w-auto">
+                            <!-- SEARCH INPUT -->
+                            <input type="text" id="bookingSearchInput" onkeyup="filterBookings(this.value)" placeholder="Search by client name or booking ID..." class="item-input flex-grow md:flex-none md:w-64">
+                            <!-- STATUS FILTER DROPDOWN -->
+                            <select id="statusFilter" onchange="filterBookings(document.getElementById('bookingSearchInput').value)" class="item-input md:w-48">
+                                <option value="">All Statuses</option>
+                                <option value="Pending Deposit">Pending Deposit</option>
+                                <option value="Confirmed">Confirmed</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <!-- END STICKY HEADER -->
+
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Booking ID</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Venue & Date</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client Name</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Value (Discounted)</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="booking-list" class="bg-white divide-y divide-gray-200">
+                            <!-- Booking rows will be dynamically inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Reports View (NEW FEATURE) -->
+            <section id="view-reports" class="current-view hidden space-y-6">
+                <h3 class="text-2xl font-semibold text-gray-800 border-b pb-4">Reports & Analytics</h3>
+                <p class="text-gray-500">Detailed performance reports. This is a new section to analyze your venue's profitability and market position.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                     <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                        <h4 class="text-xl font-semibold mb-3">Profitability Trend</h4>
+                        <p class="text-gray-500 text-sm">Visualize net income over the last 12 months.</p>
+                        <div class="h-64 mt-4 bg-gray-50 rounded-lg flex items-center justify-center text-gray-400">
+                            [ Placeholder for Net Income Line Chart ]
+                        </div>
+                    </div>
+                     <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                        <h4 class="text-xl font-semibold mb-3">Service Utilization Breakdown</h4>
+                        <p class="text-gray-500 text-sm">See which extra services (Catering, DJ, Decor) contribute the most revenue.</p>
+                        <div class="h-64 mt-4 bg-gray-50 rounded-lg flex items-center justify-center text-gray-400">
+                            [ Placeholder for Service Revenue Pie Chart ]
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- Profile View (No structural changes) -->
+            <section id="view-profile" class="current-view hidden space-y-6">
+                <h3 class="text-2xl font-semibold text-gray-800 border-b pb-4">Vendor Profile & Settings</h3>
+                <p class="text-gray-500">This section allows the vendor to manage contact information and primary settings.</p>
+                <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100 max-w-2xl">
+                    <form class="space-y-6">
+                        <div>
+                            <label for="vendor_name" class="block text-sm font-medium text-gray-700">Venue Company Name</label>
+                            <input type="text" id="vendor_name" value="Stark Venue Management" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border">
+                        </div>
+                         <button type="submit" class="w-full py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150">
+                            Save Profile Changes
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- 1. Venue Modal (UPDATED: Added Legal Docs Panel) -->
+    <div id="venueModal" class="fixed inset-0 bg-gray-900 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
+        <!-- Reduced max-width for cleaner accordion layout -->
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl p-8 transform transition-all duration-300 max-h-[95vh] overflow-y-auto">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-3">Add/Edit Venue Listing & Services</h3>
+            
+            <form id="venueForm" class="space-y-6">
+                
+                <!-- ACCORDION PANEL 1: Venue Core Details & Thumbnails -->
+                <div class="accordion-panel">
+                    <div class="accordion-header" onclick="togglePanel(this, 'panelCoreDetails')">
+                        <i class="fas fa-home mr-3"></i> Venue Core Details & Thumbnails
+                        <i id="icon-panelCoreDetails" class="fas fa-chevron-up text-base transition-transform duration-300"></i>
+                    </div>
+                    <div id="panelCoreDetails" class="accordion-content space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Venue Name</label>
+                                <input type="text" id="venueName" class="mt-1 item-input w-full" placeholder="e.g., Grand Ballroom" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Daily Base Price (₹)</label>
+                                <input type="number" id="venuePrice" min="100" class="mt-1 price-input w-full" placeholder="150000" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Max Capacity (Guests)</label>
+                                <input type="number" id="venueCapacity" min="10" class="mt-1 item-input w-full" placeholder="500" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Availability</label>
+                                <select id="venueAvailability" class="mt-1 item-input w-full">
+                                    <option value="Available">Available</option>
+                                    <option value="Unavailable">Unavailable</option>
+                                    <option value="Partially Available">Partially Available</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <h4 class="text-lg font-bold text-indigo-600 pb-2 border-b pt-4">Venue Thumbnails (Min 4 Pics)</h4>
+                        <div id="venueThumbnailsContainer" class="space-y-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <!-- Input 1 -->
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">Thumbnail 1 (Primary)</label>
+                                <div class="upload-link-group">
+                                    <input type="text" id="thumbnail_1" class="upload-link-input" placeholder="Image URL or Path after upload..." required>
+                                    <div class="upload-link-button" onclick="handleSimulatedUpload('thumbnail_1')">
+                                        <i class="fas fa-upload mr-1"></i> Upload/Link
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Input 2 -->
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">Thumbnail 2</label>
+                                <div class="upload-link-group">
+                                    <input type="text" id="thumbnail_2" class="upload-link-input" placeholder="Image URL or Path after upload..." required>
+                                    <div class="upload-link-button" onclick="handleSimulatedUpload('thumbnail_2')">
+                                        <i class="fas fa-upload mr-1"></i> Upload/Link
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Input 3 -->
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">Thumbnail 3</label>
+                                <div class="upload-link-group">
+                                    <input type="text" id="thumbnail_3" class="upload-link-input" placeholder="Image URL or Path after upload..." required>
+                                    <div class="upload-link-button" onclick="handleSimulatedUpload('thumbnail_3')">
+                                        <i class="fas fa-upload mr-1"></i> Upload/Link
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Input 4 -->
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">Thumbnail 4</label>
+                                <div class="upload-link-group">
+                                    <input type="text" id="thumbnail_4" class="upload-link-input" placeholder="Image URL or Path after upload..." required>
+                                    <div class="upload-link-button" onclick="handleSimulatedUpload('thumbnail_4')">
+                                        <i class="fas fa-upload mr-1"></i> Upload/Link
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ACCORDION PANEL 2: Decoration Themes & Fixed Service Pricing -->
+                <div class="accordion-panel">
+                    <div class="accordion-header" onclick="togglePanel(this, 'panelDecoration')">
+                        <i class="fas fa-palette mr-3"></i> Decoration Themes & Fixed Service Pricing
+                        <i id="icon-panelDecoration" class="fas fa-chevron-down text-base transition-transform duration-300"></i>
+                    </div>
+                    <div id="panelDecoration" class="accordion-content hidden space-y-4">
+                        <p class="text-sm text-gray-600">Set theme name, price, main picture, and 4 thumbnails per theme.</p>
+                         <h5 class="text-md font-semibold text-indigo-700 mb-2">Decoration Themes</h5>
+                        <div id="decorationThemesContainer" class="space-y-3">
+                            <!-- Dynamic decoration items will go here -->
+                        </div>
+
+                        <button type="button" onclick="addDynamicItem('decorationThemesContainer', 'theme')" class="w-full py-2 px-3 text-sm rounded-lg text-indigo-700 bg-indigo-100 hover:bg-indigo-200 transition duration-150 flex items-center justify-center mt-3">
+                            <i class="fas fa-plus mr-2"></i> Add New Decoration Theme
+                        </button>
+
+                        <h5 class="text-md font-semibold text-indigo-700 pb-2 border-t pt-4 mt-6">Fixed Service Pricing</h5>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="flex justify-between items-center py-1 bg-gray-50 p-2 rounded-lg">
+                                <label class="text-sm font-medium text-gray-700">Standard Photo/Video Price (₹):</label>
+                                <input type="number" id="photoPrice" value="12000" min="0" class="price-input w-24 text-sm">
+                            </div>
+                             <div class="flex justify-between items-center py-1 bg-gray-50 p-2 rounded-lg">
+                                <label class="text-sm font-medium text-gray-700">Outsourced Catering Fee:</label>
+                                <input type="number" id="outsourcedCateringFee" value="2500" min="0" class="price-input w-24 text-sm">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ACCORDION PANEL 3: Food Catering Items (Veg/Non-Veg) -->
+                <div class="accordion-panel">
+                    <div class="accordion-header" onclick="togglePanel(this, 'panelFoodCatering')">
+                        <i class="fas fa-utensils mr-3"></i> Food Catering Items (Price per Plate)
+                         <i id="icon-panelFoodCatering" class="fas fa-chevron-down text-base transition-transform duration-300"></i>
+                    </div>
+                    <div id="panelFoodCatering" class="accordion-content hidden space-y-6">
+                        <p class="text-sm text-gray-600">Enter item name, price per plate/head, and an image URL.</p>
+
+                        <div class="p-3 bg-green-50 rounded-lg">
+                            <h5 class="font-semibold text-green-700 mb-2">Veg Menu Items</h5>
+                            <div id="vegMenuItemsContainer" class="space-y-3">
+                                <!-- Dynamic veg items will go here -->
+                            </div>
+                            <button type="button" onclick="addDynamicItem('vegMenuItemsContainer', 'veg_menu')" class="w-full mt-3 py-2 px-3 text-sm rounded-lg text-green-700 bg-green-100 hover:bg-green-200 transition duration-150 flex items-center justify-center">
+                                <i class="fas fa-plus mr-2"></i> Add Veg Item
+                            </button>
+                        </div>
+
+                        <div class="p-3 bg-red-50 rounded-lg">
+                            <h5 class="font-semibold text-red-700 mb-2">Non-Veg Menu Items</h5>
+                            <div id="nonVegMenuItemsContainer" class="space-y-3">
+                                <!-- Dynamic non-veg items will go here -->
+                            </div>
+                            <button type="button" onclick="addDynamicItem('nonVegMenuItemsContainer', 'nonveg_menu')" class="w-full mt-3 py-2 px-3 text-sm rounded-lg text-red-700 bg-red-100 hover:bg-red-200 transition duration-150 flex items-center justify-center">
+                                <i class="fas fa-plus mr-2"></i> Add Non-Veg Item
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ACCORDION PANEL 4: Cakes & Live Counters -->
+                <div class="accordion-panel">
+                    <div class="accordion-header" onclick="togglePanel(this, 'panelCakesCounters')">
+                        <i class="fas fa-birthday-cake mr-3"></i> Cakes, Flavors & Live Food Counters
+                         <i id="icon-panelCakesCounters" class="fas fa-chevron-down text-base transition-transform duration-300"></i>
+                    </div>
+                    <div id="panelCakesCounters" class="accordion-content hidden space-y-6">
+                        
+                        <div class="p-3 bg-yellow-50 rounded-lg">
+                            <h5 class="font-semibold text-yellow-700 mb-2">Cake Flavor & Pricing</h5>
+                            <p class="text-xs text-gray-600 mb-3">Set flavor, price, unit (Kg/Gram), and sample design URL.</p>
+                            <div id="cakeFlavorsContainer" class="space-y-3">
+                                <!-- Dynamic cake items will go here -->
+                            </div>
+                            <button type="button" onclick="addDynamicItem('cakeFlavorsContainer', 'cake')" class="w-full mt-3 py-2 px-3 text-sm rounded-lg text-yellow-700 bg-yellow-100 hover:bg-yellow-200 transition duration-150 flex items-center justify-center">
+                                <i class="fas fa-plus mr-2"></i> Add Cake Flavor
+                            </button>
+                        </div>
+
+                        <div class="p-3 bg-blue-50 rounded-lg">
+                            <h5 class="font-semibold text-blue-700 mb-2">Live Food Counters (₹/Event)</h5>
+                            <p class="text-xs text-gray-600 mb-3">Enter counter name and price per event.</p>
+                            <div id="liveCountersContainer" class="space-y-3">
+                                <!-- Dynamic live counter items will go here -->
+                            </div>
+                            <button type="button" onclick="addDynamicItem('liveCountersContainer', 'live_counter')" class="w-full mt-3 py-2 px-3 text-sm rounded-lg text-blue-700 bg-blue-100 hover:bg-blue-200 transition duration-150 flex items-center justify-center">
+                                <i class="fas fa-plus mr-2"></i> Add Live Counter
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ACCORDION PANEL 5: Extra Event Services -->
+                <div class="accordion-panel">
+                    <div class="accordion-header" onclick="togglePanel(this, 'panelExtraServices')">
+                        <i class="fas fa-lightbulb mr-3"></i> Extra Event Services (Per Event)
+                         <i id="icon-panelExtraServices" class="fas fa-chevron-down text-base transition-transform duration-300"></i>
+                    </div>
+                    <div id="panelExtraServices" class="accordion-content hidden space-y-4">
+                        <p class="text-sm text-gray-600 mb-3">List equipment/services like DJ, specialized lighting, seating arrangements, etc., and their price per event.</p>
+                        <div id="extraServicesContainer" class="space-y-3">
+                            <!-- Dynamic extra services items will go here -->
+                        </div>
+                        <button type="button" onclick="addDynamicItem('extraServicesContainer', 'extra_service')" class="w-full mt-3 py-2 px-3 text-sm rounded-lg text-fuchsia-700 bg-fuchsia-100 hover:bg-fuchsia-200 transition duration-150 flex items-center justify-center">
+                            <i class="fas fa-plus mr-2"></i> Add Extra Service
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ACCORDION PANEL 6: Legal Documents & Floor Plans (NEW FEATURE) -->
+                <div class="accordion-panel">
+                    <div class="accordion-header" onclick="togglePanel(this, 'panelLegalDocs')">
+                        <i class="fas fa-file-contract mr-3"></i> Legal Documents & Floor Plans
+                         <i id="icon-panelLegalDocs" class="fas fa-chevron-down text-base transition-transform duration-300"></i>
+                    </div>
+                    <div id="panelLegalDocs" class="accordion-content hidden space-y-4">
+                        <p class="text-sm text-gray-600 mb-3">Upload legal agreements (PDFs), floor plans (images), and marketing material for verification and client viewing.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Legal Agreement -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Signed Legal Agreement (PDF URL)</label>
+                                <div class="upload-link-group">
+                                    <input type="text" id="legalAgreementUrl" class="upload-link-input" placeholder="Document URL (PDF)">
+                                    <div class="upload-link-button bg-gray-600 hover:bg-gray-700" onclick="handleSimulatedUpload('legalAgreementUrl')">
+                                        <i class="fas fa-file-pdf mr-1"></i> Upload/Link
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Floor Plan -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Venue Floor Plan (Image URL)</label>
+                                <div class="upload-link-group">
+                                    <input type="text" id="floorPlanUrl" class="upload-link-input" placeholder="Image URL (JPG/PNG)">
+                                    <div class="upload-link-button bg-gray-600 hover:bg-gray-700" onclick="handleSimulatedUpload('floorPlanUrl')">
+                                        <i class="fas fa-map-marked-alt mr-1"></i> Upload/Link
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Marketing Brochure -->
+                        <div class="mt-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Marketing Brochure (PDF/Link)</label>
+                            <div class="upload-link-group">
+                                <input type="text" id="marketingBrochureUrl" class="upload-link-input" placeholder="PDF or Dropbox link for marketing material">
+                                <div class="upload-link-button bg-gray-600 hover:bg-gray-700" onclick="handleSimulatedUpload('marketingBrochureUrl')">
+                                    <i class="fas fa-book-open mr-1"></i> Upload/Link
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </form>
+            
+            <div class="flex justify-end space-x-4 mt-8 pt-4 border-t border-gray-200">
+                <button type="button" onclick="closeModal('venueModal')" class="bg-gray-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-gray-600 transition duration-150">Cancel</button>
+                <button type="button" onclick="saveVenue()" class="bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition duration-150">Save Venue Listing</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Booking Details/Update Modal (Enhanced for Editing) -->
+    <div id="bookingModal" class="fixed inset-0 bg-gray-900 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl p-8 transform transition-all duration-300 max-h-[95vh] overflow-y-auto">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-3">Booking Details & Update</h3>
+            <form id="bookingUpdateForm" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="bookingIdDisplay" class="block text-sm font-medium text-gray-700">Booking ID</label>
+                        <input type="text" id="bookingIdDisplay" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border bg-gray-100" readonly>
+                    </div>
+                    <div>
+                        <label for="venueNameInput" class="block text-sm font-medium text-gray-700">Venue Name</label>
+                        <input type="text" id="venueNameInput" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border" required>
+                    </div>
+                    <div>
+                        <label for="clientNameInput" class="block text-sm font-medium text-gray-700">Client Name</label>
+                        <input type="text" id="clientNameInput" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border" required>
+                    </div>
+                    <div>
+                        <label for="clientEmailInput" class="block text-sm font-medium text-gray-700">Client Email</label>
+                        <input type="email" id="clientEmailInput" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border" required>
+                    </div>
+                    <div>
+                        <label for="clientPhoneInput" class="block text-sm font-medium text-gray-700">Client Phone</label>
+                        <input type="tel" id="clientPhoneInput" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border" required>
+                    </div>
+                    <div>
+                        <label for="bookingDateInput" class="block text-sm font-medium text-gray-700">Date</label>
+                        <input type="text" id="bookingDateInput" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border" required>
+                    </div>
+                    <div>
+                        <label for="guestCountInput" class="block text-sm font-medium text-gray-700">Guest Count</label>
+                        <input type="number" id="guestCountInput" min="1" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border" required>
+                    </div>
+                    <div>
+                        <label for="eventTypeInput" class="block text-sm font-medium text-gray-700">Event Type</label>
+                        <input type="text" id="eventTypeInput" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border" required>
+                    </div>
+                    <div>
+                        <label for="bookingValueInput" class="block text-sm font-medium text-gray-700">Base Value (₹)</label>
+                        <input type="number" id="bookingValueInput" min="0" step="0.01" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border" required>
+                    </div>
+                    <div>
+                        <label for="depositAmountInput" class="block text-sm font-medium text-gray-700">Deposit Amount (₹)</label>
+                        <input type="number" id="depositAmountInput" min="0" step="0.01" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border" required>
+                    </div>
+                    <div>
+                        <label for="bookingStatusSelect" class="block text-sm font-medium text-gray-700">Booking Status</label>
+                        <select id="bookingStatusSelect" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border">
+                            <option value="Pending Deposit">Pending Deposit</option>
+                            <option value="Confirmed">Confirmed</option>
+                            <option value="Cancelled">Cancelled</option>
+                            <option value="Not Available">Not Available</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="paymentStatusSelect" class="block text-sm font-medium text-gray-700">Payment Status</label>
+                        <select id="paymentStatusSelect" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border">
+                            <option value="Partial">Partial</option>
+                            <option value="Full">Full</option>
+                            <option value="Pending">Pending</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label for="selectedServicesInput" class="block text-sm font-medium text-gray-700">Selected Services</label>
+                    <textarea id="selectedServicesInput" rows="2" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border" placeholder="e.g., Catering, DJ"></textarea>
+                </div>
+                <div>
+                    <label for="discountInput" class="block text-sm font-medium text-gray-700">Apply Vendor Discount (%)</label>
+                    <input type="number" id="discountInput" min="0" max="100" placeholder="0" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border">
+                </div>
+                <div>
+                    <label for="bookingQuery" class="block text-sm font-medium text-gray-700">Query/Notes</label>
+                    <textarea id="bookingQuery" rows="3" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border" placeholder="Any queries or additional notes..."></textarea>
+                </div>
+                <div class="text-sm text-gray-600">
+                    <p><strong>Final Value:</strong> <span id="finalValueDisplay">₹0.00</span></p>
+                </div>
+            </form>
+            <div class="flex justify-end space-x-4 mt-6 pt-4 border-t border-gray-200">
+                <button onclick="closeModal('bookingModal')" class="bg-gray-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-gray-600 transition duration-150">Cancel</button>
+                <button onclick="updateBooking()" class="bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition duration-150" id="updateBookingBtn">
+                    Update Booking
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <script type="module">
+        // Firebase Setup (Standard initialization)
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot, setDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        setLogLevel('Debug');
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-vendor-app';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let app, db, auth, userId = null;
+        const CURRENCY = '₹';
+
+        // --- Mock Data (Updated with new 'documents' structure) ---
+        const mockVenues = [
+            {
+                id: 'V001', name: 'Grand Ballroom - Empire', location: 'Downtown, NY', pricePerDay: 150000.00, capacity: 500, status: 'Available', availability: 'Available',
+                venueThumbnails: ['https://placehold.co/150x100/4f46e5/ffffff?text=V-1-Primary', 'https://placehold.co/150x100/4f46e5/ffffff?text=V-2', 'https://placehold.co/150x100/4f46e5/ffffff?text=V-3', 'https://placehold.co/150x100/4f46e5/ffffff?text=V-4'],
+                decorationThemes: [
+                    {
+                        name: 'Rustic Garden Chic', price: 22000,
+                        mainImageUrl: 'https://placehold.co/100x70/65a30d/ffffff?text=Rustic+Main',
+                        thumbnails: ['URL-R1', 'URL-R2', 'URL-R3', 'URL-R4']
+                    },
+                ],
+                catering: {
+                    outsourcedFee: 2500, photoPrice: 12000,
+                    vegMenu: [{ item: 'Veg Biryani', price: 150, imageUrl: 'https://placehold.co/80x80/047857/ffffff?text=Biryani' }, { item: 'Paneer Tikka', price: 200, imageUrl: 'https://placehold.co/80x80/047857/ffffff?text=Paneer' }],
+                    nonVegMenu: [{ item: 'Chicken Tandoori', price: 250, imageUrl: 'https://placehold.co/80x80/b91c1c/ffffff?text=Tandoori' }],
+                    liveCounters: [{ item: 'Pani Puri Counter', price: 10000, imageUrl: 'https://placehold.co/80x80/3b82f6/ffffff?text=PaniPuri' }],
+                    cakeFlavors: [{ flavor: 'Chocolate Truffle', price: 1200, priceUnit: 'Kg', imageUrl: 'https://placehold.co/80x80/996515/ffffff?text=Choco' }],
+                    extraServices: [{ item: 'In-house DJ & Sound', price: 18000, imageUrl: 'https://placehold.co/80x80/9333ea/ffffff?text=DJ' }]
+                },
+                documents: { // NEW FIELD
+                    legalAgreementUrl: 'https://placehold.co/100x70/65a30d/ffffff?text=Legal+PDF',
+                    floorPlanUrl: 'https://placehold.co/100x70/f59e0b/000000?text=Floor+Plan+IMG',
+                    marketingBrochureUrl: 'https://placehold.co/100x70/10b981/ffffff?text=Brochure+PDF'
+                }
+            },
+            {
+                 id: 'V002', name: 'Rooftop Lounge - Zenith', location: 'Uptown, NY', pricePerDay: 80000.00, capacity: 200, status: 'Available', availability: 'Partially Available',
+                venueThumbnails: ['https://placehold.co/150x100/f59e0b/000000?text=V-5-Primary', 'https://placehold.co/150x100/f59e0b/000000?text=V-6', 'https://placehold.co/150x100/f59e0b/000000?text=V-7', 'https://placehold.co/150x100/f59e0b/000000?text=V-8'],
+                decorationThemes: [{name: 'Minimalist Sunset', price: 15000, mainImageUrl: 'https://placehold.co/100x70/f59e0b/ffffff?text=Sunset+Main', thumbnails: ['URL-S1', 'URL-S2', 'URL-S3', 'URL-S4']}],
+                catering: {outsourcedFee: 2000, photoPrice: 10000, vegMenu: [{item: 'Mini Burgers', price: 180, imageUrl: 'https://placehold.co/80x80/047857/ffffff?text=Burger'}], nonVegMenu: [], liveCounters: [], cakeFlavors: [], extraServices: []},
+                documents: {legalAgreementUrl: null, floorPlanUrl: null, marketingBrochureUrl: null}
+            }
+        ];
+
+        const mockBookings = [
+            { id: 'B-2001', venueName: 'Grand Ballroom - Empire', date: '2025-11-10 (6 PM)', client: 'P. Parker', clientEmail: 'p.parker@example.com', clientPhone: '+91-9876543210', guestCount: 200, eventType: 'Wedding Reception', selectedServices: ['Catering', 'DJ'], depositAmount: 30000, paymentStatus: 'Partial', value: 150000.00, status: 'Pending Deposit', discountPercent: 0, finalValue: 150000.00, notes: 'Client requested early setup. Confirm availability.' },
+            { id: 'B-2002', venueName: 'Rooftop Lounge - Zenith', date: '2025-11-20 (Day)', client: 'S. Strange', clientEmail: 's.strange@example.com', clientPhone: '+91-8765432109', guestCount: 50, eventType: 'Corporate Meeting', selectedServices: ['Photo/Video'], depositAmount: 4500, paymentStatus: 'Full', value: 45000.00, status: 'Confirmed', discountPercent: 10, finalValue: 40500.00, notes: 'VIP client, ensure premium service.' },
+        ];
+
+
+        // --- Initialisation and Authentication ---
+
+        async function initFirebase() {
+            if (!firebaseConfig) {
+                console.error("Firebase configuration is missing. Running in UI demo mode.");
+                document.getElementById('loading').classList.add('hidden');
+                renderVenues(mockVenues);
+                renderBookings(mockBookings);
+                renderCharts();
+                return;
+            }
+
+            try {
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        userId = user.uid;
+                    } else {
+                        userId = 'anonymous-' + crypto.randomUUID().substring(0, 8);
+                    }
+                    document.getElementById('vendor-id').textContent = `Vendor ID: ${userId}`;
+                    setupRealtimeDataListeners();
+                    document.getElementById('loading').classList.add('hidden');
+                });
+
+            } catch (error) {
+                console.error("Firebase initialization failed:", error);
+                document.getElementById('loading').classList.add('hidden');
+                renderVenues(mockVenues);
+                renderBookings(mockBookings);
+                renderCharts();
+            }
+        }
+        
+        function getCollectionPath(collectionName) {
+             return `artifacts/${appId}/users/${userId}/${collectionName}`;
+        }
+
+        // --- Data Rendering & Filtering (UPDATED: Added filterVenues) ---
+        
+        function setupRealtimeDataListeners() {
+            if (!db || !userId) {
+                renderVenues(mockVenues);
+                renderBookings(mockBookings);
+                renderCharts();
+                return;
+            }
+
+            // Using mock data for demo consistency, but listeners would be here
+            renderVenues(mockVenues);
+            renderBookings(mockBookings);
+            renderCharts();
+        }
+
+        /**
+         * Filters the venue list based on the search input query.
+         */
+        window.filterVenues = function(query) {
+            const lowerCaseQuery = query.toLowerCase().trim();
+            const filteredVenues = mockVenues.filter(v =>
+                v.name.toLowerCase().includes(lowerCaseQuery) ||
+                v.id.toLowerCase().includes(lowerCaseQuery)
+            );
+            renderVenues(filteredVenues);
+        }
+
+        /**
+         * Filters the booking list based on the search input query and status filter.
+         */
+        window.filterBookings = function(query) {
+            const lowerCaseQuery = query.toLowerCase().trim();
+            const statusFilter = document.getElementById('statusFilter').value;
+            const filteredBookings = mockBookings.filter(b => {
+                const matchesQuery = b.client.toLowerCase().includes(lowerCaseQuery) || b.id.toLowerCase().includes(lowerCaseQuery);
+                const matchesStatus = statusFilter === '' || b.status === statusFilter;
+                return matchesQuery && matchesStatus;
+            });
+            renderBookings(filteredBookings);
+            document.getElementById('booking-count').textContent = filteredBookings.length;
+        }
+
+        /**
+         * Renders the given list of venues to the table.
+         */
+        function renderVenues(venues) {
+            document.getElementById('venue-count').textContent = venues.length;
+            const container = document.getElementById('venue-list');
+            container.innerHTML = venues.map(v => {
+                let statusColor = 'text-green-600 bg-green-100';
+                if (v.status === 'Needs Approval') statusColor = 'text-yellow-600 bg-yellow-100';
+                
+                const decoCount = v.decorationThemes?.length || 0;
+                const vegCount = v.catering?.vegMenu?.length || 0;
+                const nonVegCount = v.catering?.nonVegMenu?.length || 0;
+                const cakeCount = v.catering?.cakeFlavors?.length || 0;
+                const liveCount = v.catering?.liveCounters?.length || 0;
+                const extraCount = v.catering?.extraServices?.length || 0; 
+                const totalServices = decoCount + vegCount + nonVegCount + cakeCount + liveCount + extraCount;
+
+
+                return `
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            ${v.name}
+                            <div class="text-xs text-gray-500 font-mono">ID: ${v.id} | Max ${v.capacity} Guests</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-semibold">${CURRENCY}${v.pricePerDay.toLocaleString('en-IN')}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <span class="font-bold text-indigo-600">${totalServices}</span> service options
+                            <div class="text-xs text-gray-400">(${decoCount} Themes, ${vegCount+nonVegCount} Food Items, ${extraCount} Extra Services)</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColor}">
+                                ${v.status}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <button class="text-indigo-600 hover:text-indigo-900 mr-3" onclick="openVenueModal('${v.id}')">Edit</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function renderBookings(bookings) {
+             const container = document.getElementById('booking-list');
+            container.innerHTML = bookings.map(b => {
+                let statusColor = 'bg-yellow-100 text-yellow-800';
+                if (b.status === 'Confirmed') statusColor = 'bg-green-100 text-green-800';
+                if (b.status === 'Cancelled') statusColor = 'bg-red-100 text-red-800';
+                
+                const finalValueFormatted = b.finalValue.toLocaleString('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 2 });
+                const discountText = b.discountPercent > 0 ? `<span class="text-xs text-red-500 font-semibold block">(${b.discountPercent}% OFF)</span>` : '';
+
+
+                return `
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${b.id}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <div class="font-medium">${b.venueName}</div>
+                            <div class="text-xs text-gray-400">${b.date}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${b.client}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-semibold">
+                            ${finalValueFormatted}
+                            ${discountText}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColor}">
+                                ${b.status}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <button class="text-indigo-600 hover:text-indigo-900" onclick="showBookingDetails('${b.id}')">View Details</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // --- Chart Rendering (No Change) ---
+
+        let bookingVisitsChartInstance, venueGrowthChartInstance;
+
+        function renderCharts() {
+            if (bookingVisitsChartInstance) bookingVisitsChartInstance.destroy();
+            if (venueGrowthChartInstance) venueGrowthChartInstance.destroy();
+
+            // Chart 1: Booking Value vs. Venue Visits (Last 6 Months)
+            const ctx1 = document.getElementById('bookingVisitsChart');
+            if (ctx1) {
+                bookingVisitsChartInstance = new Chart(ctx1, {
+                    data: {
+                        labels: ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+                        datasets: [
+                            {
+                                label: 'Booking Value (in Lakhs ₹)',
+                                data: [8, 9.5, 12, 10, 15.5, 18], // Line chart for value
+                                borderColor: '#4f46e5', // Indigo-600
+                                backgroundColor: 'rgba(79, 70, 229, 0.2)',
+                                fill: false,
+                                tension: 0.4,
+                                type: 'line',
+                                pointRadius: 5,
+                                yAxisID: 'y',
+                            },
+                            {
+                                label: 'Total Venue Visits',
+                                data: [1200, 1450, 1800, 1500, 2200, 2700], // Bar chart for visits
+                                borderColor: '#fb923c', // Orange-400
+                                backgroundColor: 'rgba(251, 146, 60, 0.8)',
+                                type: 'bar',
+                                yAxisID: 'y1',
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: { mode: 'index', intersect: false },
+                        scales: { 
+                            y: { 
+                                beginAtZero: false, 
+                                title: { display: true, text: 'Value (₹ in Lakhs)' },
+                                grid: { color: 'rgba(0,0,0,0.05)' } 
+                            },
+                            y1: { // Secondary axis for visits
+                                type: 'linear',
+                                display: true,
+                                position: 'right',
+                                title: { display: true, text: 'Visits Count' },
+                                grid: { drawOnChartArea: false } 
+                            }
+                        },
+                        plugins: { legend: { position: 'top' } }
+                    }
+                });
+            }
+
+            // Chart 2: Venue Category Distribution (Doughnut Chart)
+            const ctx2 = document.getElementById('venueGrowthChart');
+            if (ctx2) {
+                 venueGrowthChartInstance = new Chart(ctx2, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Banquet Hall (45%)', 'Rooftop Lounge (30%)', 'Outdoor Lawn/Garden (15%)', 'Convention Center (10%)'],
+                        datasets: [{
+                            label: 'Active Venue Listings Mix',
+                            data: [45, 30, 15, 10], 
+                            backgroundColor: ['#10b981', '#ef4444', '#3b82f6', '#f59e0b'], 
+                            hoverOffset: 12
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'right' } }
+                    }
+                });
+            }
+        }
+
+        // --- Utility Functions ---
+
+        window.openModal = function(modalId) {
+            document.getElementById(modalId).classList.remove('hidden');
+        }
+
+        window.closeModal = function(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        window.switchView = function(viewId) {
+            document.querySelectorAll('.current-view').forEach(view => view.classList.add('hidden'));
+            document.querySelectorAll('.sidebar-item').forEach(nav => nav.classList.remove('active'));
+
+            document.getElementById(`view-${viewId}`)?.classList.remove('hidden');
+            document.getElementById(`nav-${viewId}`)?.classList.add('active');
+
+            // Reset search inputs and filters on view switch
+            if (viewId === 'venues') {
+                const venueSearchInput = document.getElementById('venueSearchInput');
+                if (venueSearchInput) {
+                     venueSearchInput.value = '';
+                     renderVenues(mockVenues); // Reset filtered view
+                }
+            } else if (viewId === 'bookings') {
+                const bookingSearchInput = document.getElementById('bookingSearchInput');
+                const statusFilter = document.getElementById('statusFilter');
+                if (bookingSearchInput) {
+                     bookingSearchInput.value = '';
+                }
+                if (statusFilter) {
+                     statusFilter.value = '';
+                }
+                renderBookings(mockBookings); // Reset filtered view
+                document.getElementById('booking-count').textContent = mockBookings.length;
+            }
+
+            if (viewId === 'dashboard') {
+                renderCharts();
+            }
+        }
+
+        /**
+         * Toggles the visibility of an accordion content panel.
+         */
+        window.togglePanel = function(headerElement, contentId) {
+            const content = document.getElementById(contentId);
+            const icon = document.getElementById(`icon-${contentId}`);
+
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+            } else {
+                content.classList.add('hidden');
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
+            }
+        }
+
+
+        /**
+         * Simulates a file upload interaction by prompting the user for a URL.
+         */
+        window.handleSimulatedUpload = function(inputId) {
+            const input = document.getElementById(inputId);
+            
+            const url = prompt("Paste your Image or Document URL (Link) here.\n\nThis URL acts as the uploaded file path for the system.");
+            if (url) {
+                input.value = url.trim();
+                input.style.backgroundColor = '#ecfdf5'; // Light green background to show it was populated
+            } else if (input.value === '') {
+                 input.value = '';
+                 input.style.backgroundColor = '#fff';
+            }
+        }
+        
+        // --- Dynamic Item Management ---
+
+        /**
+         * Generates the HTML for the Image Upload/Link input field.
+         */
+        function getImageUploadHtml(fieldName, value) {
+            const inputId = `img-input-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+            const placeholderText = fieldName.includes('Main') ? "Paste Main Picture URL or Upload" : "Paste Picture URL or Upload";
+            const initialBg = value ? '#ecfdf5' : '#fff';
+            
+            let thumbnailInput = '';
+            if (fieldName.includes('Thumbnails')) {
+                // Special case for decoration theme thumbnails (4 separate inputs in one field)
+                const thumbnails = Array.isArray(value) ? value : (value ? value.split(',').map(u => u.trim()) : []);
+                
+                for(let i = 0; i < 4; i++) {
+                    const currentId = `${inputId}_${i}`;
+                    const currentValue = thumbnails[i] || '';
+                    const currentBg = currentValue ? '#ecfdf5' : '#fff';
+
+                    thumbnailInput += `
+                        <div class="space-y-1">
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Thumbnail ${i + 1}</label>
+                            <div class="upload-link-group">
+                                <input type="text" id="${currentId}" data-field="thumbnails" data-index="${i}" value="${currentValue}" style="background-color: ${currentBg};" class="upload-link-input" placeholder="Image URL or Path after upload..." ${i < 4 ? 'required' : ''}>
+                                <div class="upload-link-button bg-orange-500 hover:bg-orange-600" onclick="handleSimulatedUpload('${currentId}')">
+                                    <i class="fas fa-image mr-1"></i> Upload/Link
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                return `
+                    <div class="space-y-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                        <label class="block text-sm font-semibold text-gray-700">Theme Thumbnails (Min 4 Pics)</label>
+                        <div class="grid grid-cols-2 gap-3">${thumbnailInput}</div>
+                    </div>
+                `;
+            }
+
+            // Standard single image input
+            return `
+                <div class="w-full">
+                    <label class="block text-xs font-medium text-gray-700 mb-1">${fieldName}</label>
+                    <div class="upload-link-group">
+                        <input type="text" data-field="${fieldName.includes('Main') || fieldName.includes('Picture') ? 'mainImageUrl' : 'imageUrl'}" value="${value || ''}" style="background-color: ${initialBg};" class="upload-link-input" placeholder="${placeholderText}">
+                        <div class="upload-link-button" onclick="handleSimulatedUpload(this.previousElementSibling.id || this.previousElementSibling.setAttribute('id', 'temp-id-' + Math.random().toString(36).substring(2, 9)) && this.previousElementSibling.id)">
+                            <i class="fas fa-upload mr-1"></i> Upload/Link
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+
+        window.addDynamicItem = function(containerId, type, data = {}) {
+            const container = document.getElementById(containerId);
+            const itemId = `item-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+
+            let label1, placeholder1, label2, placeholder2, priceUnit, imageFieldName;
+            let showPriceUnitSelect = false;
+
+            switch (type) {
+                case 'theme':
+                    label1 = 'Theme Name'; placeholder1 = 'Rustic Garden Chic';
+                    label2 = 'Price'; placeholder2 = '22000'; priceUnit = '₹/Setup';
+                    imageFieldName = 'Main Theme Picture (Required)';
+                    break;
+                case 'veg_menu':
+                case 'nonveg_menu':
+                    label1 = 'Item Name'; placeholder1 = (type === 'veg_menu' ? 'Paneer Tikka' : 'Chicken Tandoori');
+                    label2 = 'Price'; placeholder2 = '200'; priceUnit = '₹/Head/Plate';
+                    imageFieldName = 'Food Item Picture';
+                    break;
+                case 'cake':
+                    label1 = 'Flavor'; placeholder1 = 'Red Velvet';
+                    label2 = 'Price'; placeholder2 = '1500'; priceUnit = '₹';
+                    imageFieldName = 'Cake Design Picture';
+                    showPriceUnitSelect = true;
+                    break;
+                case 'live_counter':
+                    label1 = 'Counter Name'; placeholder1 = 'Pani Puri Station';
+                    label2 = 'Price'; placeholder2 = '10000'; priceUnit = '₹/Event';
+                    imageFieldName = 'Counter Picture';
+                    break;
+                case 'extra_service': 
+                    label1 = 'Service Name'; placeholder1 = 'DJ & Sound System';
+                    label2 = 'Price'; placeholder2 = '18000'; priceUnit = '₹/Event';
+                    imageFieldName = 'Service Picture (Optional)';
+                    break;
+                default:
+                    return;
+            }
+
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'dynamic-list-item space-y-3';
+            itemDiv.id = itemId;
+            itemDiv.dataset.type = type;
+
+            let priceInputHtml = '';
+            if (showPriceUnitSelect) {
+                const selectedUnit = data.priceUnit || 'Kg';
+                priceInputHtml = `
+                    <div class="flex items-center space-x-1 w-48">
+                        <span class="text-sm text-gray-500">${CURRENCY}</span>
+                        <input type="number" data-field="price" value="${data.price || ''}" class="price-input w-2/3 text-sm" placeholder="${placeholder2}" required min="0">
+                        <select data-field="priceUnit" class="price-input w-1/3 text-xs p-1">
+                            <option value="Kg" ${selectedUnit === 'Kg' ? 'selected' : ''}>/Kg</option>
+                            <option value="Gram" ${selectedUnit === 'Gram' ? 'selected' : ''}>/Gram</option>
+                            <option value="Unit" ${selectedUnit === 'Unit' ? 'selected' : ''}>/Unit</option>
+                        </select>
+                    </div>
+                `;
+            } else {
+                 priceInputHtml = `
+                    <div class="flex items-center space-x-1 w-48">
+                        <span class="text-sm text-gray-500">${CURRENCY}</span>
+                        <input type="number" data-field="price" value="${data.price || ''}" class="price-input w-full text-sm" placeholder="${placeholder2}" required min="0">
+                        <span class="text-xs text-gray-500 whitespace-nowrap">${priceUnit}</span>
+                    </div>
+                `;
+            }
+            
+            const imageHtml = getImageUploadHtml(imageFieldName, data.mainImageUrl || data.imageUrl);
+            const thumbnailHtml = type === 'theme' ? getImageUploadHtml('Theme Thumbnails', data.thumbnails) : '';
+
+            let html = `
+                <div class="flex-row-controls">
+                    <input type="text" data-field="name" value="${data.name || data.item || data.flavor || ''}" class="item-input flex-grow" placeholder="${placeholder1} (${label1})" required>
+                    ${priceInputHtml}
+                    <button type="button" onclick="document.getElementById('${itemId}').remove()" class="text-red-500 hover:text-red-700 transition flex-shrink-0">
+                        <i class="fas fa-trash-alt text-base"></i>
+                    </button>
+                </div>
+                ${imageHtml}
+                ${thumbnailHtml}
+            `;
+
+            itemDiv.innerHTML = html;
+            container.appendChild(itemDiv);
+        }
+
+        window.openVenueModal = function(venueId = null) {
+            document.getElementById('venueForm').reset();
+            
+            // Clear all dynamic containers
+            document.getElementById('decorationThemesContainer').innerHTML = '';
+            document.getElementById('vegMenuItemsContainer').innerHTML = '';
+            document.getElementById('nonVegMenuItemsContainer').innerHTML = '';
+            document.getElementById('cakeFlavorsContainer').innerHTML = '';
+            document.getElementById('liveCountersContainer').innerHTML = '';
+            document.getElementById('extraServicesContainer').innerHTML = ''; 
+            
+            // Reference to the 4 mandatory thumbnail inputs
+            const thumbInputs = [document.getElementById('thumbnail_1'), document.getElementById('thumbnail_2'), document.getElementById('thumbnail_3'), document.getElementById('thumbnail_4')];
+            
+            // NEW DOCUMENT FIELDS
+            const legalAgreementUrl = document.getElementById('legalAgreementUrl');
+            const floorPlanUrl = document.getElementById('floorPlanUrl');
+            const marketingBrochureUrl = document.getElementById('marketingBrochureUrl');
+
+            const venue = mockVenues.find(v => v.id === venueId);
+            if (venue) {
+                // Populate static fields
+                document.getElementById('venueName').value = venue.name;
+                document.getElementById('venuePrice').value = venue.pricePerDay;
+                document.getElementById('venueCapacity').value = venue.capacity;
+                document.getElementById('venueAvailability').value = venue.availability || 'Available';
+                document.getElementById('photoPrice').value = venue.catering.photoPrice || 0;
+                document.getElementById('outsourcedCateringFee').value = venue.catering.outsourcedFee || 2500;
+                
+                // Populate Venue Thumbnails
+                venue.venueThumbnails.slice(0, 4).forEach((url, index) => {
+                    if (thumbInputs[index]) {
+                         thumbInputs[index].value = url;
+                         thumbInputs[index].style.backgroundColor = url ? '#ecfdf5' : '#fff';
+                    }
+                });
+
+                // Populate NEW Document fields
+                legalAgreementUrl.value = venue.documents?.legalAgreementUrl || '';
+                floorPlanUrl.value = venue.documents?.floorPlanUrl || '';
+                marketingBrochureUrl.value = venue.documents?.marketingBrochureUrl || '';
+                
+                legalAgreementUrl.style.backgroundColor = legalAgreementUrl.value ? '#ecfdf5' : '#fff';
+                floorPlanUrl.style.backgroundColor = floorPlanUrl.value ? '#ecfdf5' : '#fff';
+                marketingBrochureUrl.style.backgroundColor = marketingBrochureUrl.value ? '#ecfdf5' : '#fff';
+
+
+                // Populate dynamic fields
+                venue.decorationThemes.forEach(d => addDynamicItem('decorationThemesContainer', 'theme', d));
+                venue.catering.vegMenu.forEach(i => addDynamicItem('vegMenuItemsContainer', 'veg_menu', i));
+                venue.catering.nonVegMenu.forEach(i => addDynamicItem('nonVegMenuItemsContainer', 'nonveg_menu', i));
+                venue.catering.cakeFlavors.forEach(c => addDynamicItem('cakeFlavorsContainer', 'cake', c));
+                venue.catering.liveCounters.forEach(l => addDynamicItem('liveCountersContainer', 'live_counter', l));
+                venue.catering.extraServices?.forEach(e => addDynamicItem('extraServicesContainer', 'extra_service', e)); 
+
+            } else {
+                 // Set default/placeholder values for new venue
+                 thumbInputs.forEach((input, index) => {
+                    input.value = `https://placehold.co/150x100?text=Venue+Pic+${index+1}`;
+                    input.style.backgroundColor = '#ecfdf5';
+                 });
+                 addDynamicItem('decorationThemesContainer', 'theme', {name: 'Rustic Garden Chic', price: 22000, mainImageUrl: 'https://placehold.co/100x70/65a30d/ffffff?text=Rustic', thumbnails: ['URL-R1', 'URL-R2', 'URL-R3', 'URL-R4']});
+                 addDynamicItem('vegMenuItemsContainer', 'veg_menu', {item: 'Veg Biryani', price: 150, imageUrl: 'https://placehold.co/80x80/047857/ffffff?text=Biryani'});
+                 addDynamicItem('nonVegMenuItemsContainer', 'nonveg_menu', {item: 'Chicken Tandoori', price: 250, imageUrl: 'https://placehold.co/80x80/b91c1c/ffffff?text=Tandoori'});
+                 addDynamicItem('cakeFlavorsContainer', 'cake', {flavor: 'Chocolate Truffle', price: 1200, priceUnit: 'Kg', imageUrl: 'https://placehold.co/80x80/996515/ffffff?text=Choco'});
+                 addDynamicItem('liveCountersContainer', 'live_counter', {item: 'Pani Puri Station', price: 10000, imageUrl: 'https://placehold.co/80x80/3b82f6/ffffff?text=PaniPuri'});
+                 addDynamicItem('extraServicesContainer', 'extra_service', {item: 'In-house DJ & Sound', price: 18000, imageUrl: 'https://placehold.co/80x80/9333ea/ffffff?text=DJ'});
+            }
+
+            // Ensure only the first panel is open on load/edit
+            document.getElementById('panelDecoration').classList.add('hidden');
+            document.getElementById('panelFoodCatering').classList.add('hidden');
+            document.getElementById('panelCakesCounters').classList.add('hidden');
+            document.getElementById('panelExtraServices').classList.add('hidden');
+            document.getElementById('panelLegalDocs').classList.add('hidden'); // NEW PANEL HIDDEN
+            
+            document.getElementById('icon-panelDecoration').classList.remove('fa-chevron-up');
+            document.getElementById('icon-panelDecoration').classList.add('fa-chevron-down');
+            document.getElementById('icon-panelFoodCatering').classList.remove('fa-chevron-up');
+            document.getElementById('icon-panelFoodCatering').classList.add('fa-chevron-down');
+            document.getElementById('icon-panelCakesCounters').classList.remove('fa-chevron-up');
+            document.getElementById('icon-panelCakesCounters').classList.add('fa-chevron-down');
+            document.getElementById('icon-panelExtraServices').classList.remove('fa-chevron-up');
+            document.getElementById('icon-panelExtraServices').classList.add('fa-chevron-down');
+            document.getElementById('icon-panelLegalDocs').classList.remove('fa-chevron-up'); // NEW ICON
+            document.getElementById('icon-panelLegalDocs').classList.add('fa-chevron-down'); // NEW ICON
+
+            document.getElementById('panelCoreDetails').classList.remove('hidden');
+            document.getElementById('icon-panelCoreDetails').classList.remove('fa-chevron-down');
+            document.getElementById('icon-panelCoreDetails').classList.add('fa-chevron-up');
+
+
+            openModal('venueModal');
+        }
+
+        /**
+         * Extracts data from a dynamic container based on the item type.
+         */
+        function extractDynamicItems(containerId) {
+            const items = [];
+            document.getElementById(containerId).querySelectorAll('.dynamic-list-item').forEach(itemDiv => {
+                const nameInput = itemDiv.querySelector('[data-field="name"]');
+                const priceInput = itemDiv.querySelector('[data-field="price"]');
+                const mainImageUrlInput = itemDiv.querySelector('[data-field="mainImageUrl"]'); 
+                const imageUrlInput = itemDiv.querySelector('[data-field="imageUrl"]'); 
+                const priceUnitInput = itemDiv.querySelector('[data-field="priceUnit"]');
+                const thumbnailInputs = itemDiv.querySelectorAll('[data-field="thumbnails"]');
+
+                const name = nameInput?.value;
+                const price = parseFloat(priceInput?.value);
+                
+                if (!name || isNaN(price) || price < 0) {
+                    return;
+                }
+
+                const item = { price };
+                const type = itemDiv.dataset.type;
+
+                if (type === 'theme') {
+                    const thumbnails = Array.from(thumbnailInputs).map(input => input.value.trim()).filter(url => url);
+                    if (thumbnails.length < 4) {
+                         console.error(`Theme "${name}" skipped: requires minimum 4 thumbnails.`);
+                         return;
+                    }
+
+                    item.name = name;
+                    item.mainImageUrl = mainImageUrlInput?.value || null;
+                    item.thumbnails = thumbnails;
+                } else if (type === 'veg_menu' || type === 'nonveg_menu' || type === 'live_counter' || type === 'extra_service') {
+                    item.item = name;
+                    item.imageUrl = imageUrlInput?.value || null;
+                } else if (type === 'cake') {
+                    item.flavor = name;
+                    item.imageUrl = imageUrlInput?.value || null;
+                    item.priceUnit = priceUnitInput?.value || 'Kg';
+                }
+                
+                items.push(item);
+            });
+            return items;
+        }
+
+
+        window.saveVenue = function() {
+            // 1. Core Details
+            const venueName = document.getElementById('venueName').value;
+            const venueCapacity = parseInt(document.getElementById('venueCapacity').value);
+            const venuePrice = parseFloat(document.getElementById('venuePrice').value);
+            
+            // Extract Venue Thumbnails
+            const venueThumbnails = [
+                document.getElementById('thumbnail_1').value.trim(),
+                document.getElementById('thumbnail_2').value.trim(),
+                document.getElementById('thumbnail_3').value.trim(),
+                document.getElementById('thumbnail_4').value.trim(),
+            ].filter(url => url);
+            
+            const photoPrice = parseFloat(document.getElementById('photoPrice').value) || 0;
+            const outsourcedCateringFee = parseFloat(document.getElementById('outsourcedCateringFee').value) || 2500;
+
+            if (!venueName || isNaN(venueCapacity) || isNaN(venuePrice) || venueThumbnails.length < 4) {
+                const message = venueThumbnails.length < 4
+                    ? "Please provide minimum 4 Venue Thumbnail URLs." 
+                    : "Please fill in all required venue details (Name, Capacity, Price).";
+                console.error(message); 
+                return;
+            }
+
+            // 2. Dynamic Services Extraction
+            const decorationThemes = extractDynamicItems('decorationThemesContainer');
+            const vegMenu = extractDynamicItems('vegMenuItemsContainer');
+            const nonVegMenu = extractDynamicItems('nonVegMenuItemsContainer');
+            const cakeFlavors = extractDynamicItems('cakeFlavorsContainer');
+            const liveCounters = extractDynamicItems('liveCountersContainer');
+            const extraServices = extractDynamicItems('extraServicesContainer'); 
+            
+            // 3. NEW Document Extraction
+            const documents = {
+                legalAgreementUrl: document.getElementById('legalAgreementUrl').value.trim() || null,
+                floorPlanUrl: document.getElementById('floorPlanUrl').value.trim() || null,
+                marketingBrochureUrl: document.getElementById('marketingBrochureUrl').value.trim() || null,
+            };
+
+
+            const newVenueData = {
+                id: 'V' + (mockVenues.length + 1).toString().padStart(3, '0'), // Mock ID
+                name: venueName,
+                capacity: venueCapacity,
+                pricePerDay: venuePrice,
+                status: 'Needs Approval',
+                venueThumbnails: venueThumbnails,
+                
+                decorationThemes: decorationThemes,
+                catering: {
+                    outsourcedFee: outsourcedCateringFee,
+                    photoPrice: photoPrice,
+                    vegMenu: vegMenu,
+                    nonVegMenu: nonVegMenu,
+                    liveCounters: liveCounters,
+                    cakeFlavors: cakeFlavors,
+                    extraServices: extraServices, 
+                },
+                documents: documents, // NEW DATA
+            };
+
+            // Simulating save operation (In a real app, this would be a Firestore setDoc or addDoc)
+            if (db && userId) {
+                 const newDocRef = doc(collection(db, getCollectionPath('venues')));
+                 setDoc(newDocRef, newVenueData).then(() => {
+                    console.log("Venue saved to Firestore successfully.");
+                 }).catch(e => {
+                     console.error("Error saving venue to Firestore:", e);
+                     // Fallback/Demo update
+                     mockVenues.push(newVenueData);
+                     renderVenues(mockVenues);
+                 });
+            } else {
+                 console.warn("Firestore not available. Saving to mock data.");
+                 mockVenues.push(newVenueData);
+                 renderVenues(mockVenues);
+            }
+            
+            closeModal('venueModal');
+        }
+
+        // --- Booking Discount Logic (No Change) ---
+        
+        window.showBookingDetails = function(bookingId) {
+            const booking = mockBookings.find(b => b.id === bookingId);
+            if (!booking) return;
+
+            // Populate editable fields
+            document.getElementById('bookingIdDisplay').value = booking.id;
+            document.getElementById('venueNameInput').value = booking.venueName;
+            document.getElementById('clientNameInput').value = booking.client;
+            document.getElementById('bookingDateInput').value = booking.date;
+            document.getElementById('bookingValueInput').value = booking.value;
+            document.getElementById('bookingStatusSelect').value = booking.status;
+            document.getElementById('discountInput').value = booking.discountPercent;
+            document.getElementById('bookingQuery').value = booking.notes || '';
+
+            // Calculate and display final value
+            const finalValue = booking.value * (1 - booking.discountPercent / 100);
+            document.getElementById('finalValueDisplay').textContent = finalValue.toLocaleString('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 2 });
+
+            document.getElementById('discountInput').dataset.bookingId = bookingId;
+
+            document.getElementById('updateBookingBtn').textContent = 'Update Booking Details';
+            document.getElementById('updateBookingBtn').classList.remove('bg-green-600', 'hover:bg-green-700');
+            document.getElementById('updateBookingBtn').classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+
+            openModal('bookingModal');
+        }
+
+        window.applyDiscount = function() {
+            const button = document.getElementById('applyDiscountBtn');
+            const discountInput = document.getElementById('discountInput');
+            const bookingId = discountInput.dataset.bookingId;
+            const discountPercent = parseFloat(discountInput.value);
+            const booking = mockBookings.find(b => b.id === bookingId);
+            
+            if (booking && discountPercent >= 0 && discountPercent <= 100) {
+                const newFinalValue = booking.value * (1 - discountPercent / 100);
+                
+                booking.discountPercent = discountPercent;
+                booking.finalValue = newFinalValue;
+                
+                renderBookings(mockBookings);
+                window.showBookingDetails(bookingId); 
+                
+                button.textContent = 'Updated!';
+                button.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+                button.classList.add('bg-green-600', 'hover:bg-green-700');
+                
+                setTimeout(() => {
+                    button.textContent = 'Apply & Update';
+                    button.classList.remove('bg-green-600', 'hover:bg-green-700');
+                    button.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+                }, 1500);
+
+            } else {
+                console.error("Invalid discount or booking ID.");
+                button.textContent = 'Invalid %!';
+                button.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+                button.classList.add('bg-red-600', 'hover:bg-red-700');
+                setTimeout(() => {
+                    button.textContent = 'Apply & Update';
+                    button.classList.remove('bg-red-600', 'hover:bg-red-700');
+                    button.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+                }, 1500);
+            }
+        }
+
+
+        // Initialize Firebase and the application when the window loads
+        window.onload = function() {
+            document.getElementById('loading').classList.remove('hidden');
+            initFirebase();
+        };
+        
+    </script>
+</body>
+</html>
